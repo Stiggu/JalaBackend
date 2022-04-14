@@ -65,19 +65,15 @@
 // const a: object = {
 //     b: 'b',
 // };
-
 // const b = {
 //     c: {
 //         d: 'e'
 //     }
 // };
-
 // class Person {
 //     constructor(public fN: string, public lN: string){
 //     }
-
 // }
-
 // const f: {
 //     b: number,
 //     c?:string,
@@ -88,5 +84,36 @@
 //     10: true
 // };
 
-
-
+// ALIASES
+// type Age = number;
+// type Person = {
+//     name: string,
+//     age: Age
+// }
+// const a: Age = 55;
+// const driver: Person = {
+//     name: "hello",
+//     age: a
+// };
+// It has Scope
+// type Cat = {
+//     name: string,
+//     purrs: boolean
+// }
+// type Dog = {
+//     name: string,
+//     barks: boolean
+// }
+// Both
+// type CatOrDogOrBoth = Cat | Dog;
+// const c: CatOrDogOrBoth = {
+//     name: 'a',
+//     purrs: true
+// };
+// Only one
+// type CatAndDog = Cat & Dog;
+// const b: CatAndDog = {
+//     name: 'a',
+//     purrs: true,
+//     barks: false,
+// };
