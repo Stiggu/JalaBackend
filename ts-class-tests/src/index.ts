@@ -117,3 +117,31 @@
 //     purrs: true,
 //     barks: false,
 // };
+
+// Read only array
+// Const it's only for assignation
+// const as: readonly number[] =  [1,2,3];
+// const bc: number[] = [1,2,3];
+// bc.push(4);
+// const bs: readonly number[] = as.concat(4);
+
+
+// void
+// function f() {
+//     const a = 1+3;
+//     return;
+// }
+// f();
+
+// Enum
+// enum Language{
+//     Spanish = 0,
+//     English = 1
+// }
+// const t = Language.English.valueOf();
+// console.log(t);
+// enum Language{
+//     French = 2
+// }
+// const b = Language['Spanish'];
+
