@@ -1,5 +1,6 @@
 // import express from "express";
 
+
 // const app = express();
 // const port = 8080;
 
@@ -11,7 +12,7 @@
 //     console.log(`Listening on https://127.0.0.1:${port}`);
 // });
 
-
+/* Types!!
 // Any / Unknown
 // const z: unknown = 30;
 // const y = z === 123;
@@ -54,7 +55,7 @@
 // const f:'hello' = 'hello';
 
 // Symbol - They are unique, only equal itself
-// const a = Symbol('a');
+// let a = Symbol('a');
 // const b: symbol = Symbol('b');
 // const c = a === b;
 // Doenst work
@@ -144,4 +145,98 @@
 //     French = 2
 // }
 // const b = Language['Spanish'];
+*/
+
+/* Functions */
+
+// Named
+// function g0(n: string): string {
+//     return 'hello ' + n;
+// }
+// Function expression
+// const g2 = function(n:string): string{
+//     return 'hello ' + n;
+// };
+// Arrow
+// const g1 = (a: number, b:number): number => {
+//     return a + b;
+// };
+// Shorthand Arrow
+// const g3 = (a: number, b: number): number => a + b;
+// Literally illegal
+// const g4 = new Function('name', 'return "Hello "+ name;');
+
+// function log(m: string, uid?: number){
+//     console.log(m, uid || 'Not signed in');
+// }
+// Optional parameters go last
+// function betterLog(m: string, t: string, uid?: number): string{
+//     return m;
+// }
+// Rest Parameters
+// function s(numbers: number[]): number{
+//     return numbers.reduce((total, currentValue) => total + currentValue, 0);
+// }
+// console.log(s([1,2,3,4,5,6,7,8,9]));
+
+// Illegal
+// function s1(): number {
+//     return Array.from(arguments)
+//             .reduce((total, currentValue) => total + currentValue, 0);
+// }
+
+// Rest Parameters
+// type SN = string | number;
+// function s2(...args: number[]): number {
+//     return args.reduce((total, currentValue) => total + currentValue);
+// }
+
+// function add(a: number, b: number): number {
+//     return a + b;
+// }
+// add(10, 20);
+// add.apply(null, [10,20]);
+// add.call(null, 10, 20);
+// add.bind(null, 10, 20)();
+
+
+const ana = {
+    species: 'Human',
+    name: 'Ana',
+    lastname: 'White',
+    gender: "Female"
+};
+
+const emma = {
+    species: 'Human',
+    name: 'Emma',
+    lastname: 'Red',
+    gender: "Female"
+};
+
+const tom = {
+    species: 'Human',
+    name: 'Tom',
+    lastname: 'Brown',
+    gender: "Male"
+};
+
+const michael = {
+    species: 'Human',
+    name: 'Michael',
+    lastname: 'Black',
+    gender: 'Male',
+    getInfo: function(): string{
+        return `${this.name} ${this.lastname} | ${this.species} ${this.gender}`;
+    }
+};
+
+const tomInfo = michael.getInfo.bind(tom);
+console.log(tomInfo());
+tom.species = 'Dog';
+console.log(tomInfo());
+
+
+
+
 
