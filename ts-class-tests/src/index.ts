@@ -147,7 +147,7 @@
 // const b = Language['Spanish'];
 */
 
-/* Functions */
+/* Functions
 
 // Named
 // function g0(n: string): string {
@@ -197,9 +197,10 @@
 // add(10, 20);
 // add.apply(null, [10,20]);
 // add.call(null, 10, 20);
-// add.bind(null, 10, 20)();
+// add.bind(null, 10, 20)();*/
 
-
+/* BIND HOMEWORK
+// Server Info
 const ana = {
     species: 'Human',
     name: 'Ana',
@@ -221,6 +222,7 @@ const tom = {
     gender: "Male"
 };
 
+// Info inside the client
 const michael = {
     species: 'Human',
     name: 'Michael',
@@ -234,9 +236,30 @@ const michael = {
 const tomInfo = michael.getInfo.bind(tom);
 console.log(tomInfo());
 tom.species = 'Dog';
-console.log(tomInfo());
+console.log(tomInfo());*/
 
+/* This */
+// const x = {
+//     a() {
+//         return this;
+//     }
+// };
 
+// console.log(x.a());
 
+function* fibbonacciNumbers(): IterableIterator<number> {
+    const fibbo = [1, 1];
+    
+    while(1){
+        fibbo.push(fibbo.slice(-2).reduce((t,c) => t+c));
+        yield fibbo.slice(-1)[0];
+    } 
+}
 
+const numbers = fibbonacciNumbers();
+console.log(numbers.next());
+console.log(numbers.next());
+console.log(numbers.next());
+console.log(numbers.next());
+console.log(numbers.next());
 
