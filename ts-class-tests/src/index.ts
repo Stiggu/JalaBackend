@@ -248,18 +248,51 @@ console.log(tomInfo());*/
 // console.log(x.a());
 
 function* fibbonacciNumbers(): IterableIterator<number> {
-    const fibbo = [1, 1];
+    const fibbo = [0, 1];
     
     while(1){
         fibbo.push(fibbo.slice(-2).reduce((t,c) => t+c));
+        fibbo.shift();
         yield fibbo.slice(-1)[0];
     } 
 }
 
 const numbers = fibbonacciNumbers();
-console.log(numbers.next());
-console.log(numbers.next());
-console.log(numbers.next());
-console.log(numbers.next());
-console.log(numbers.next());
+console.log(numbers.next().value);
+console.log(numbers.next().value);
+console.log(numbers.next().value);
+console.log(numbers.next().value);
+console.log(numbers.next().value);
+
+function generateColour(colours: string[]): string{
+    /*
+        Hex: 0xffffff
+        Calculation: 15*16^5 + 15*16^4 + 15*16^3 + 15*16^2 + 15*16^1 + 15
+        result: 16777215
+    */
+    const n = '#' + (Math.random() * 0xffffff * 1000000).toString(16).slice(0, 6);
+    if(colours.includes(n)){
+        return generateColour(colours);
+    }
+    return n;
+}
+
+function* uniqueColourGenerator(): Generator<string, string[], string> {
+    const uniqueColours:string[] = [];
+    while(1){
+        uniqueColours.push(generateColour(uniqueColours));
+        if(yield uniqueColours.slice(-1)[0]){
+            break;
+        }
+    }
+    return uniqueColours;
+}
+
+const colours:Generator<string> = uniqueColourGenerator();
+console.log(colours.next().value);
+console.log(colours.next().value);
+console.log(colours.next().value);
+console.log(colours.next().value);
+const allColors = colours.next(true).value;
+console.log(allColors);
 
