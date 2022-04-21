@@ -247,6 +247,7 @@ console.log(tomInfo());*/
 
 // console.log(x.a());
 
+/* Generators
 function* fibbonacciNumbers(): IterableIterator<number> {
     const fibbo = [0, 1];
     
@@ -262,14 +263,17 @@ console.log(numbers.next().value);
 console.log(numbers.next().value);
 console.log(numbers.next().value);
 console.log(numbers.next().value);
-console.log(numbers.next().value);
+console.log(numbers.next().value);*/
 
-function generateColour(colours: string[]): string{
-    /*
+
+/*
         Hex: 0xffffff
         Calculation: 15*16^5 + 15*16^4 + 15*16^3 + 15*16^2 + 15*16^1 + 15
         result: 16777215
-    */
+*/
+/*
+function generateColour(colours: string[]): string{
+    
     const n = '#' + (Math.random() * 0xffffff * 1000000).toString(16).slice(0, 6);
     if(colours.includes(n)){
         return generateColour(colours);
@@ -294,5 +298,45 @@ console.log(colours.next().value);
 console.log(colours.next().value);
 console.log(colours.next().value);
 const allColors = colours.next(true).value;
-console.log(allColors);
+console.log(allColors); */
+
+/*/ Iterators
+const numbers = {
+    *[Symbol.iterator](){
+        for(let x = 1; x <= 10; x++){
+            yield x;
+        }
+    }
+};
+
+console.log(numbers);*/
+
+/*/ Functions
+function sum(a:number, b:number): number {
+    return a+b;
+}
+type sumCoSignature = (a: number, b: number) => number;
+type sumCoSignature1 = {
+    (a: number, b: number): number;
+};
+type readCoSignature = (message:string, userId?: string) => void;*/
+
+// Overloads
+
+class Reservation{
+    constructor(public from:Date, public to:Date|string, public destination?:string){}
+}
+
+type Reserve = {
+    (from: Date, to: Date, destination:string): Reservation;
+    (from: Date, destination:string): Reservation;
+}
+
+const res1: Reserve = (from: Date, to:Date | string, destination?:string): Reservation => {
+    return new Reservation(from, to, destination);
+};
+console.log(res1(new Date, new Date, 'no'));
+console.log(res1(new Date, 'no'));
+
+
 
