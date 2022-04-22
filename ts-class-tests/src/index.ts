@@ -1,6 +1,4 @@
 // import express from "express";
-
-
 // const app = express();
 // const port = 8080;
 
@@ -321,8 +319,7 @@ type sumCoSignature1 = {
 };
 type readCoSignature = (message:string, userId?: string) => void;*/
 
-// Overloads
-
+/*/ Overloads
 class Reservation{
     constructor(public from:Date, public to:Date|string, public destination?:string){}
 }
@@ -336,7 +333,36 @@ const res1: Reserve = (from: Date, to:Date | string, destination?:string): Reser
     return new Reservation(from, to, destination);
 };
 console.log(res1(new Date, new Date, 'no'));
-console.log(res1(new Date, 'no'));
+console.log(res1(new Date, 'no'));*/
+
+/* Classes */
+// Never have more than one class in a single file!!
+
+import Piece from './piece';
+class Game {
+
+}
+
+
+// class Queen extends Piece {}
+// class Rook extends Piece {}
+// class Bishop extends Piece {}
+// class Knight extends Piece {}
+// class Pawn extends Piece {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
