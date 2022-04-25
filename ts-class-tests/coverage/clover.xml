@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1650925637481" clover="3.2.0">
+  <project timestamp="1650925637482" name="All files">
+    <metrics statements="17" coveredstatements="14" conditionals="5" coveredconditionals="5" methods="8" coveredmethods="6" elements="30" coveredelements="25" complexity="0" loc="17" ncloc="17" packages="1" files="4" classes="4"/>
+    <file name="calc.ts" path="D:\Programming\JalaSoftBootCamp\JalaBackend\ts-class-tests\src\calc.ts">
+      <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+      <line num="1" count="1" type="stmt"/>
+      <line num="2" count="1" type="stmt"/>
+    </file>
+    <file name="king.ts" path="D:\Programming\JalaSoftBootCamp\JalaBackend\ts-class-tests\src\king.ts">
+      <metrics statements="3" coveredstatements="3" conditionals="5" coveredconditionals="5" methods="1" coveredmethods="1"/>
+      <line num="1" count="1" type="stmt"/>
+      <line num="4" count="1" type="stmt"/>
+      <line num="6" count="4" type="cond" truecount="3" falsecount="0"/>
+    </file>
+    <file name="piece.ts" path="D:\Programming\JalaSoftBootCamp\JalaBackend\ts-class-tests\src\piece.ts">
+      <metrics statements="8" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="1"/>
+      <line num="1" count="1" type="stmt"/>
+      <line num="4" count="1" type="stmt"/>
+      <line num="7" count="1" type="stmt"/>
+      <line num="8" count="1" type="stmt"/>
+      <line num="9" count="1" type="stmt"/>
+      <line num="13" count="0" type="stmt"/>
+      <line num="14" count="0" type="stmt"/>
+      <line num="18" count="0" type="stmt"/>
+    </file>
+    <file name="position.ts" path="D:\Programming\JalaSoftBootCamp\JalaBackend\ts-class-tests\src\position.ts">
+      <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="3"/>
+      <line num="3" count="1" type="stmt"/>
+      <line num="4" count="5" type="stmt"/>
+      <line num="6" count="12" type="stmt"/>
+      <line num="7" count="14" type="stmt"/>
+    </file>
+  </project>
+</coverage>

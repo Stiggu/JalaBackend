@@ -1,9 +1,11 @@
 import Piece from "./piece";
 import Position from "./position";
 
-class King extends Piece {
-
+export default class King extends Piece {
     canMove(position: Position): boolean {
-        throw new Error("Method not implemented.");
+        return Math.abs(position.getFile().charCodeAt(0) - this.position.getFile().charCodeAt(0)) <= 1 
+                && Math.abs(position.getRank() - this.position.getRank()) <= 1
+                && !(position.getRank() == this.position.getRank()
+                && position.getFile() == this.position.getFile()); 
     }
 }

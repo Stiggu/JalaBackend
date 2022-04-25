@@ -1,14 +1,14 @@
-// import express from "express";
-// const app = express();
-// const port = 8080;
+/*import express from "express";
+const app = express();
+const port = 8080;
 
-// app.get('/', (req, res) => {
-//     res.send('AHA');
-// });
+app.get('/', (req, res) => {
+    res.send('AHA');
+});
 
-// app.listen(port, () => {
-//     console.log(`Listening on https://127.0.0.1:${port}`);
-// });
+app.listen(port, () => {
+    console.log(`Listening on https://127.0.0.1:${port}`);
+});*/
 
 /* Types!!
 // Any / Unknown
@@ -338,25 +338,15 @@ console.log(res1(new Date, 'no'));*/
 /* Classes */
 // Never have more than one class in a single file!!
 
-import Piece from './piece';
-class Game {
+import King from './king';
+import Position from './position';
+import Rook from './rook';
+import Pawn from './pawn';
 
-}
-
-
-// class Queen extends Piece {}
-// class Rook extends Piece {}
-// class Bishop extends Piece {}
-// class Knight extends Piece {}
-// class Pawn extends Piece {}
-
-
-
-
-
-
-
-
+const p = new Pawn('White', 'B', 1);
+console.log(p.canMove(new Position('A', 1)));
+const k = new King('White', 'A', 1);
+console.log(k.canMove(new Position('A', 5)));
 
 
 
