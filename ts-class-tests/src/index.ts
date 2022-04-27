@@ -356,3 +356,4 @@ console.log(k.canMove(new Position('A', 5)));
 
 
 
+

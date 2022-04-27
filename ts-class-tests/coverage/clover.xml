@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1650925637481" clover="3.2.0">
-  <project timestamp="1650925637482" name="All files">
-    <metrics statements="17" coveredstatements="14" conditionals="5" coveredconditionals="5" methods="8" coveredmethods="6" elements="30" coveredelements="25" complexity="0" loc="17" ncloc="17" packages="1" files="4" classes="4"/>
+<coverage generated="1651085080622" clover="3.2.0">
+  <project timestamp="1651085080622" name="All files">
+    <metrics statements="38" coveredstatements="34" conditionals="27" coveredconditionals="25" methods="13" coveredmethods="11" elements="78" coveredelements="70" complexity="0" loc="38" ncloc="38" packages="1" files="9" classes="9"/>
+    <file name="bishop.ts" path="D:\Programming\JalaSoftBootCamp\JalaBackend\ts-class-tests\src\bishop.ts">
+      <metrics statements="5" coveredstatements="5" conditionals="3" coveredconditionals="3" methods="1" coveredmethods="1"/>
+      <line num="1" count="1" type="stmt"/>
+      <line num="3" count="1" type="stmt"/>
+      <line num="6" count="7" type="cond" truecount="3" falsecount="0"/>
+      <line num="7" count="1" type="stmt"/>
+      <line num="10" count="6" type="stmt"/>
+    </file>
     <file name="calc.ts" path="D:\Programming\JalaSoftBootCamp\JalaBackend\ts-class-tests\src\calc.ts">
       <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
       <line num="1" count="1" type="stmt"/>
@@ -13,23 +21,51 @@
       <line num="4" count="1" type="stmt"/>
       <line num="6" count="4" type="cond" truecount="3" falsecount="0"/>
     </file>
-    <file name="piece.ts" path="D:\Programming\JalaSoftBootCamp\JalaBackend\ts-class-tests\src\piece.ts">
-      <metrics statements="8" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="1"/>
+    <file name="knight.ts" path="D:\Programming\JalaSoftBootCamp\JalaBackend\ts-class-tests\src\knight.ts">
+      <metrics statements="3" coveredstatements="3" conditionals="4" coveredconditionals="3" methods="1" coveredmethods="1"/>
       <line num="1" count="1" type="stmt"/>
       <line num="4" count="1" type="stmt"/>
-      <line num="7" count="1" type="stmt"/>
-      <line num="8" count="1" type="stmt"/>
-      <line num="9" count="1" type="stmt"/>
+      <line num="6" count="5" type="cond" truecount="3" falsecount="1"/>
+    </file>
+    <file name="pawn.ts" path="D:\Programming\JalaSoftBootCamp\JalaBackend\ts-class-tests\src\pawn.ts">
+      <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+      <line num="1" count="1" type="stmt"/>
+      <line num="3" count="1" type="stmt"/>
+      <line num="5" count="6" type="stmt"/>
+    </file>
+    <file name="piece.ts" path="D:\Programming\JalaSoftBootCamp\JalaBackend\ts-class-tests\src\piece.ts">
+      <metrics statements="8" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="1"/>
+      <line num="1" count="6" type="stmt"/>
+      <line num="4" count="6" type="stmt"/>
+      <line num="7" count="6" type="stmt"/>
+      <line num="8" count="6" type="stmt"/>
+      <line num="9" count="6" type="stmt"/>
       <line num="13" count="0" type="stmt"/>
       <line num="14" count="0" type="stmt"/>
       <line num="18" count="0" type="stmt"/>
     </file>
     <file name="position.ts" path="D:\Programming\JalaSoftBootCamp\JalaBackend\ts-class-tests\src\position.ts">
       <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="3"/>
-      <line num="3" count="1" type="stmt"/>
-      <line num="4" count="5" type="stmt"/>
-      <line num="6" count="12" type="stmt"/>
-      <line num="7" count="14" type="stmt"/>
+      <line num="3" count="6" type="stmt"/>
+      <line num="4" count="44" type="stmt"/>
+      <line num="6" count="104" type="stmt"/>
+      <line num="7" count="154" type="stmt"/>
+    </file>
+    <file name="queen.ts" path="D:\Programming\JalaSoftBootCamp\JalaBackend\ts-class-tests\src\queen.ts">
+      <metrics statements="5" coveredstatements="5" conditionals="8" coveredconditionals="8" methods="1" coveredmethods="1"/>
+      <line num="1" count="1" type="stmt"/>
+      <line num="4" count="1" type="stmt"/>
+      <line num="6" count="9" type="cond" truecount="3" falsecount="0"/>
+      <line num="7" count="1" type="stmt"/>
+      <line num="10" count="8" type="cond" truecount="5" falsecount="0"/>
+    </file>
+    <file name="rook.ts" path="D:\Programming\JalaSoftBootCamp\JalaBackend\ts-class-tests\src\rook.ts">
+      <metrics statements="5" coveredstatements="4" conditionals="7" coveredconditionals="6" methods="1" coveredmethods="1"/>
+      <line num="2" count="1" type="stmt"/>
+      <line num="4" count="1" type="stmt"/>
+      <line num="7" count="7" type="cond" truecount="2" falsecount="1"/>
+      <line num="8" count="0" type="stmt"/>
+      <line num="11" count="7" type="cond" truecount="4" falsecount="0"/>
     </file>
   </project>
 </coverage>
