@@ -338,22 +338,103 @@ console.log(res1(new Date, 'no'));*/
 /* Classes */
 // Never have more than one class in a single file!!
 
-import King from './king';
-import Position from './position';
-import Rook from './rook';
-import Pawn from './pawn';
+import King from './Entities/king';
+import Position from './Entities/position';
+import Rook from './Entities/rook';
+import Pawn from './Entities/pawn';
+import KingRepository from './Repository/KingRepository';
 
-const p = new Pawn('White', 'B', 1);
-console.log(p.canMove(new Position('A', 1)));
 const k = new King('White', 'A', 1);
-console.log(k.canMove(new Position('A', 5)));
+// initializing the repository
+const kr = new KingRepository();
+kr.create(k);
 
 
+/* Interfaces */
+/* type Food = {
+    calories: number,
+}
 
+type Sushi = Food & {
+    saty: boolean,
+}
 
+type Candy = Food & {
+    tasty: boolean,
+}
 
+interface Food1 {
+    calories: number,
+}
 
+interface Sushi1 extends Food1 {
+    saty: boolean,
+}
+interface Candy1 extends Food1 {
+    tasty: boolean,
+}
+interface  AA {
+    good(x: number): string;
+    bad(x: number): string;
+}
+interface  BB extends AA {
+    good(x: number): string;
+    bad(x: number): string;
+}
 
+interface Animal {
+    readonly name: string;
+    eat(food: string): void;
+    sleep(hours: number): void;
+}
 
+interface Feline {
+    meow(): void;
+}
 
+class Cat implements Animal, Feline {
+    readonly name: string;
 
+    constructor(){
+        this.name = '';
+    }
+    meow(): void {
+        throw new Error('Method not implemented.');
+    }
+
+    eat(food: string): void {
+        throw new Error('Method not implemented.');
+    }
+    sleep(hours: number): void {
+        throw new Error('Method not implemented.');
+    }
+
+} */
+
+class Lamp implements ISwitchable{
+    turnOn(): void {
+        return;
+    }
+
+    turnOff(): void {
+        return;
+    }
+}
+
+interface ISwitchable {
+    turnOn(): void,
+    turnOff(): void,
+}
+
+class Button {
+    constructor(private switchable: ISwitchable){
+    }
+
+    onHit(status: boolean){
+        return status ? this.switchable.turnOn() : this.switchable.turnOff();
+    }
+}
+
+const lamp: ISwitchable = new Lamp();
+const b: Button = new Button(lamp);
+b.onHit(false);
