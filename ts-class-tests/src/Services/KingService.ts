@@ -1,4 +1,4 @@
-import { inject, injectable } from "inversify";
+import { inject } from "inversify";
 import pieceRepository from "../Infrastructure/Repositories/DB/PieceRepository";
 import IKingService from './IKingService';
 
