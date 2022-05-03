@@ -1,6 +1,6 @@
 import express from "express";
 import pieceRepository from "./Infrastructure/Repositories/DB/PieceRepository";
-import { container } from "./inversify";
+import { container } from "./Services/inversify_config";
 import IRepository from "./Repository/Interfaces/IRepository";
 const app = express();
 const port = 8080;
