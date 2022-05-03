@@ -1,5 +1,5 @@
-export default interface IWrite<T> {
-    create(item: T): Promise<boolean>;
-    update(id: string, item: T): Promise<boolean>;
+export default interface IWrite {
+    create(item: string): Promise<boolean>;
+    update(id: string, item: string): Promise<boolean>;
     delete(id: string): Promise<boolean>;
-};
+}

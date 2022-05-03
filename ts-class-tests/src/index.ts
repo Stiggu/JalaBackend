@@ -1,14 +1,43 @@
-/*import express from "express";
+import express from "express";
+import pieceRepository from "./Infrastructure/Repositories/DB/PieceRepository";
+import { container } from "./inversify";
+import IRepository from "./Repository/Interfaces/IRepository";
 const app = express();
 const port = 8080;
 
 app.get('/', (req, res) => {
-    res.send('AHA');
+    const pieceRepo = container.get<IRepository>(pieceRepository);
+    pieceRepo.findOne('f');
 });
 
 app.listen(port, () => {
     console.log(`Listening on https://127.0.0.1:${port}`);
-});*/
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* Types!!
 // Any / Unknown
@@ -338,16 +367,18 @@ console.log(res1(new Date, 'no'));*/
 /* Classes */
 // Never have more than one class in a single file!!
 
-import King from './Entities/king';
+/* import King from './Entities/king';
 import Position from './Entities/position';
 import Rook from './Entities/rook';
 import Pawn from './Entities/pawn';
-import KingRepository from './Repository/KingRepository';
+import KingRepository from './Infrastructure/Repositories/KingRepository';
+import BaseRepository from './Repository/Base/BaseRepositoy';
+import IRead from './Repository/Interfaces/IRead';
 
 const k = new King('White', 'A', 1);
 // initializing the repository
 const kr = new KingRepository();
-kr.create(k);
+kr.create(k); */
 
 
 /* Interfaces */
@@ -411,7 +442,7 @@ class Cat implements Animal, Feline {
 
 } */
 
-class Lamp implements ISwitchable{
+/* class Lamp implements ISwitchable{
     turnOn(): void {
         return;
     }
@@ -437,4 +468,4 @@ class Button {
 
 const lamp: ISwitchable = new Lamp();
 const b: Button = new Button(lamp);
-b.onHit(false);
+b.onHit(false); */
