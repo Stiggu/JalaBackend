@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { injectable } from "inversify";
 import IRepository from "../../../Repository/Interfaces/IRepository";
 
@@ -16,6 +17,7 @@ export default class pieceRepository implements IRepository {
         throw new Error("Method not implemented.");
     }
     findOne(id: string): Promise<string> {
+        console.log('a');
         throw new Error("Method not implemented.");
     }
 }
