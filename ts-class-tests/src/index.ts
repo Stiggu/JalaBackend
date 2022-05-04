@@ -1,3 +1,4 @@
+import { AppDataSource } from "./data-source";
 class DbTest {
     async initDb(){
         await AppDataSource.initialize();
@@ -11,7 +12,6 @@ new DbTest().initDb();
 
 
 import express from "express";
-import { AppDataSource } from "./data-source";
 import KingService from "./Services/KingService";
 const app = express();
 const port = 8080;
