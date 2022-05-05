@@ -4,6 +4,7 @@ import { File, Rank, Color } from "./chess_types";
 export default abstract class Piece {
     protected position: Position;
     private hasMoved: boolean;
+    
     constructor(private readonly Color: Color, private file: File, private rank: Rank){
         this.position = new Position(file, rank);
         this.hasMoved = false;

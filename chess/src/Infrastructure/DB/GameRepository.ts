@@ -1,8 +1,8 @@
-import { injectable } from "inversify";
+﻿import { injectable } from "inversify";
 import IRepository from '../../Repository/Interfaces/IRepository'
 
 @injectable()
-export default class pieceRepository implements IRepository {
+export default class GameRepository implements IRepository {
     create(item: string): Promise<boolean> {
         throw new Error("Method not implemented.");
     }

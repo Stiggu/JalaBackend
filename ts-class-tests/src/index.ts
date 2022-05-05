@@ -1,28 +1,26 @@
-import { AppDataSource } from "./data-source";
+/* import { AppDataSource } from "./data-source";
 class DbTest {
     async initDb(){
         await AppDataSource.initialize();
     }
 }
-
-new DbTest().initDb();
-
-
-
+new DbTest().initDb(); */
 
 
 import express from "express";
-import KingService from "./Services/KingService";
+import Game from "./Entities/game";
 const app = express();
 const port = 8080;
 
 app.get('/', (req, res) => {
-    const kingService = new KingService();
-    kingService.createKing('f');
+    const game = new Game();
+    return res.send( {
+        pieces: game.pieces,
+    }); 
 });
 
 app.listen(port, () => {
-    console.log(`Listening on https://127.0.0.1:${port}`);
+    console.log(`Listening on http://127.0.0.1:${port}`);
 });
 
 

@@ -1,12 +1,15 @@
 import Position from "./position";
-import { File, Rank, Color } from "./chess_types";
+import {File, Rank, Color, PieceKind} from "./chess_types";
 
 export default abstract class Piece {
     protected position: Position;
     private hasMoved: boolean;
-    constructor(private readonly Color: Color, private file: File, private rank: Rank){
+    private isCaptured: boolean;
+    
+    constructor(public readonly Name: PieceKind, private readonly Color: Color, private file: File, private rank: Rank){
         this.position = new Position(file, rank);
         this.hasMoved = false;
+        this.isCaptured = false;
     }
 
     moveTo(position: Position): void{
