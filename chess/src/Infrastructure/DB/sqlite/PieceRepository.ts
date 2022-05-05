@@ -1,5 +1,5 @@
 import { injectable } from "inversify";
-import IRepository from '../../Repository/Interfaces/IRepository'
+import IRepository from "../../../Repository/Interfaces/IRepository";
 
 @injectable()
 export default class pieceRepository implements IRepository {

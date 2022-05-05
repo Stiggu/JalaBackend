@@ -1,7 +1,7 @@
 import { Container } from 'inversify';
-import pieceRepository from "../../Infrastructure/DB/PieceRepository";
 import IRepository from "../../Repository/Interfaces/IRepository";
-import GameRepository from "../../Infrastructure/DB/GameRepository";
+import pieceRepository from "../../Infrastructure/DB/sqlite/PieceRepository";
+import GameRepository from "../../Infrastructure/DB/sqlite/GameRepository";
 
 export const container = new Container();
 

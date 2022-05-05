@@ -1,6 +1,6 @@
 import { inject } from "inversify";
 import IKingService from './IKingService';
-import pieceRepository from "../Infrastructure/DB/PieceRepository";
+import pieceRepository from "../Infrastructure/DB/sqlite/PieceRepository";
 
 export default class KingService implements IKingService {
     // Not 100% sure why it needs any
