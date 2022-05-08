@@ -1,5 +1,6 @@
-﻿import Piece from "../Entities/piece";
+﻿import {Color} from "../Entities/chess_types";
 
 export default interface IGameService {
-    createGame(): Piece[],
+    getGameInformation(): object,
+    move(color: Color): object,
 }
