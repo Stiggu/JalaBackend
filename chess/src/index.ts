@@ -1,7 +1,8 @@
 import "reflect-metadata";
 import express from "express";
-import bodyParser, {BodyParser} from "body-parser";
+import bodyParser from "body-parser";
 import GameService from "./Services/GameService";
+import Position from "./Entities/position";
 
 const app = express();
 const port = 8080;
@@ -10,20 +11,30 @@ const jsonParser = bodyParser.json();
 let game = new GameService();
 
 app.get('/api/v1/start', (req, res) => {
-    res.send(game.getGameInformation());
+    res.send(game.start());
 });
 
 app.get('/api/v1/restart', (req, res) => {
     game = new GameService();
-    res.send(game.getGameInformation());
+    res.send({status: 'Game has been restarted!'});
 });
 
 app.get('/api/v1/info', (req, res) => {
     res.send(game.getGameInformation());
 });
 
+app.post('/api/v1/join', jsonParser, (req, res) => {
+    game.createNewPlayer(req.body.name)
+    res.send(game.players);
+});
+
 app.post('/api/v1/move', jsonParser, (req, res) => {
     res.send(game.move(req.body.color));
+});
+
+app.post('/api/v1/piece', jsonParser, (req, res) => {
+    const pos = new Position(req.body.file,req.body.rank);
+    res.send(game.getPiece(pos));
 });
 
 app.listen(port, () => {

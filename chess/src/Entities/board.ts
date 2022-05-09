@@ -6,18 +6,23 @@ import Bishop from "./bishop";
 import Queen from "./queen";
 import King from "./king";
 import Pawn from "./pawn";
+import Position from "./position";
+import rankMapper from "./rank_mapper";
 
 export default class Board {
-    public board: (null[] | Piece[])[];
-    public currentTurn: Color;
+    public board!: (null[] | Piece[])[];
+    public currentTurn!: Color;
 
     constructor() {
-        this.currentTurn = 'White';
-        this.board = this.createBoard();
+    }
+    
+    getPieceAt(pos: Position): Piece | null{
+        return this.board[pos.getRank()-1][rankMapper[pos.getFile()]];
     }
 
-    createBoard(): (null[] | Piece[])[] {
-        return [
+    createBoard(): void {
+        this.currentTurn = 'White';
+        this.board = [
             [
                 new Rook('Rook', 'White', 'A', 1),
                 new Knight('Knight', 'White', 'B', 1),
@@ -72,14 +77,19 @@ export default class Board {
     }
 
     move(color: Color): boolean {
-        console.log(color)
-        if (color == this.currentTurn) {
-            this.currentTurn = 'White' ? 'Black' : 'White';
-            return true;
-        } else {
+        if(color != this.currentTurn){
             return false;
         }
-
+        
+        switch (color) {
+            case "Black":
+                this.currentTurn = 'White';
+                break;
+            case "White":
+                this.currentTurn = 'Black';
+                break;
+        }
+        
+        return true;
     }
-
 }
