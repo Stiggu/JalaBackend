@@ -1,0 +1,11 @@
+﻿- ✅ Onion Architecture
+- ✅ Board with pieces
+- ✅ Pieces have information
+- ✅ A Player plays a single piece on their turn
+- ✅ White plays first
+- ✅ Game status text
+- ❌ Neither player can expose their king to a check-mate
+- ❌ Piece Logic (Missing piece specific movements and blocking)
+- ❌ Be able to capture pieces
+- ✅ Two pieces can't occupy the same spot
+- ❌ Use a database

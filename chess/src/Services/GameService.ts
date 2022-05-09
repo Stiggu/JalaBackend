@@ -10,16 +10,16 @@ export default class GameService extends Game implements IGameService {
     getPiece(pos: Position): Piece | null {
         return this.board.getPieceAt(pos);
     }
-    
+
     @inject(GameRepository) private GameRep: GameRepository | any;
 
     getGameInformation(): object {
         return this.getGameStatus();
     }
 
-    move(color: Color): object {
+    move(color: Color, from: Position, to: Position): object {
         return {
-            movementInformation: this.movePiece(color),
+            movementInformation: this.movePiece(color, from, to),
             board: this.board
         }
     }

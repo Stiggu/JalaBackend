@@ -6,7 +6,7 @@ export default abstract class Piece {
     private hasMoved: boolean;
     private isCaptured: boolean;
     
-    constructor(public readonly name: PieceKind, private readonly color: Color, private file: File, private rank: Rank){
+    constructor(public readonly name: PieceKind, private readonly color: Color, file: File, rank: Rank){
         this.position = new Position(file, rank);
         this.hasMoved = false;
         this.isCaptured = false;
@@ -19,6 +19,14 @@ export default abstract class Piece {
 
     setMoved(): void {
         this.hasMoved = true;
+    }
+    
+    setPiecePosition(pos: Position){
+        this.position = pos;
+    }
+    
+    getColor(): Color{
+        return this.color;
     }
 
     abstract canMove(position: Position): boolean;

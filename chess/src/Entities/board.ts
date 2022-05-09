@@ -15,9 +15,9 @@ export default class Board {
 
     constructor() {
     }
-    
-    getPieceAt(pos: Position): Piece | null{
-        return this.board[pos.getRank()-1][rankMapper[pos.getFile()]];
+
+    getPieceAt(pos: Position): Piece | null {
+        return this.board[pos.getRank() - 1][rankMapper[pos.getFile()]];
     }
 
     createBoard(): void {
@@ -76,20 +76,28 @@ export default class Board {
         }
     }
 
-    move(color: Color): boolean {
-        if(color != this.currentTurn){
-            return false;
-        }
-        
-        switch (color) {
-            case "Black":
-                this.currentTurn = 'White';
-                break;
-            case "White":
-                this.currentTurn = 'Black';
-                break;
-        }
-        
+    move(color: Color, from: Position, to: Position): boolean {
+        if (color != this.currentTurn) return false;
+
+        const pieceToMove = this.board[from.getRank() - 1][rankMapper[from.getFile()]];
+
+        /* Check that the piece is not null
+        * Or it's the same color as the player moving
+        * that can move to that spot
+        * that the space is empty (to change with captures)
+        */
+        if (pieceToMove === null) return false;
+        if (pieceToMove.getColor() != this.currentTurn) return false;
+        if (!pieceToMove.canMove(to)) return false;
+        if (this.getPieceAt(to) != null) return false;
+
+        if(color == 'White') this.currentTurn = 'Black';
+        if(color == 'Black') this.currentTurn = 'White';
+
+        pieceToMove.setPiecePosition(to);
+        this.board[from.getRank() - 1][rankMapper[from.getFile()]] = null;
+        this.board[to.getRank() - 1][rankMapper[to.getFile()]] = pieceToMove;
+
         return true;
     }
 }

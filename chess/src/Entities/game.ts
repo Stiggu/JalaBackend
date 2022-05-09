@@ -1,6 +1,7 @@
 import {Color, GameOutcome, GameState} from "./chess_types";
 import Board from "./board";
 import Player from "./player";
+import Position from "./position";
 
 export default class Game {
     public board: Board;
@@ -31,14 +32,15 @@ export default class Game {
         }
     }
 
-    protected movePiece(color: Color): object{
+    protected movePiece(color: Color, from: Position, to:Position): object{
         if(!this.started){
             return {
                 status: "Game is not live yet."
             };
         }
+        
         return {
-            isMoved: this.board.move(color),
+            isMoved: this.board.move(color, from, to),
         }
     }
     

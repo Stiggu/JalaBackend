@@ -29,7 +29,9 @@ app.post('/api/v1/join', jsonParser, (req, res) => {
 });
 
 app.post('/api/v1/move', jsonParser, (req, res) => {
-    res.send(game.move(req.body.color));
+    const from = new Position(req.body.from.file, req.body.from.rank);
+    const to = new Position(req.body.to.file, req.body.to.rank)
+    res.send(game.move(req.body.color, from, to));
 });
 
 app.post('/api/v1/piece', jsonParser, (req, res) => {
