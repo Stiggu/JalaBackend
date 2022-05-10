@@ -1,6 +1,6 @@
 import { Book } from "./book";
 import Exporter from "./exporter";
-import FileSaver from "./filesaver";
+import {fileType} from "./types";
 
 export class Invoice {
     
@@ -15,11 +15,11 @@ export class Invoice {
         return this.total + this.tax;
     }
 
-    printInvoice() {
-        return Exporter.invoice("PNG");
+    printInvoice(book:Book, quantity:number, fileType: fileType) {
+        Exporter.invoice(book, quantity, this.calculateTotal(), fileType);
     }
 
-    saveToFile() {
-        return FileSaver.saveFile("PNG", "path/to/file");
+    saveToFile(book:Book, quantity:number, fileType: fileType) {
+        Exporter.saveFile(book, quantity, this.calculateTotal(), fileType, "path/to/file");
     }
 }

@@ -1,1 +1,1 @@
-﻿export type fileType = "PNG" | "JPEG" | "DOC";
+﻿export type fileType = "PNG" | "JPEG" | "DOC" | "XLSX";
