@@ -4,6 +4,7 @@ import Player from "./player";
 import Position from "./position";
 
 export default class Game {
+    public id!: number
     public board: Board;
     public players: Player[] = [];
     private gameOutcome: GameOutcome;
@@ -13,10 +14,15 @@ export default class Game {
         this.gameOutcome = 'Game hasn\'t started yet';
         this.board = Game.createBoard()
     }
+
+    private static makeId(): number {
+        return Math.floor(Math.random() * 9999999999);
+    }
     
     protected startGame(){
         this.gameOutcome = 'Waiting for Players';
         this.board.createBoard();
+        this.id = Game.makeId()
         return this.getGameStatus();
     }
 
@@ -26,6 +32,7 @@ export default class Game {
     
     protected getGameStatus() {
         return {
+            id: this.id,
             outcome: this.gameOutcome,
             players: this.players,
             boardState: this.board.getBoardData()

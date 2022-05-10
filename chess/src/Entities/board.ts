@@ -12,6 +12,7 @@ import rankMapper from "./rank_mapper";
 export default class Board {
     public board!: (null[] | Piece[])[];
     public currentTurn!: Color;
+    public turn: number = 0;
 
     constructor() {
     }
@@ -91,12 +92,14 @@ export default class Board {
         if (!pieceToMove.canMove(to)) return false;
         if (this.getPieceAt(to) != null) return false;
 
+        this.turn++;
         if(color == 'White') this.currentTurn = 'Black';
         if(color == 'Black') this.currentTurn = 'White';
 
         pieceToMove.setPiecePosition(to);
         this.board[from.getRank() - 1][rankMapper[from.getFile()]] = null;
         this.board[to.getRank() - 1][rankMapper[to.getFile()]] = pieceToMove;
+        pieceToMove.setMoved();
 
         return true;
     }
