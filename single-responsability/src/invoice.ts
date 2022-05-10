@@ -4,9 +4,6 @@ import FileSaver from "./filesaver";
 
 export class Invoice {
     
-    private exporter: Exporter = new Exporter();
-    private fileSaver: FileSaver = new FileSaver();
-    
     constructor(
         public book: Book,
         public quantity: number,
@@ -14,15 +11,15 @@ export class Invoice {
         public total: number) {
     }
 
-    calculateTotal() {
+    calculateTotal(): number {
         return this.total + this.tax;
     }
 
     printInvoice() {
-        return this.exporter.invoice("invoiceType");
+        return Exporter.invoice("PNG");
     }
 
     saveToFile() {
-        this.fileSaver.saveFile("png", "path/to/file");
+        return FileSaver.saveFile("PNG", "path/to/file");
     }
 }

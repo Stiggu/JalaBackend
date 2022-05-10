@@ -1,8 +1,8 @@
-﻿export default class Exporter {
-    
-    invoice(invoiceType: string){
-    //    logic depending on the invoiceType
+﻿import {fileType} from "./types";
+import File from "./file";
+
+export default class Exporter {
+    static invoice(invoiceType: fileType): File{
+        return new File(invoiceType);
     }
-    
-    
 }

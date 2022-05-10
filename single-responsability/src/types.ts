@@ -1,0 +1,1 @@
+﻿export type fileType = "PNG" | "JPEG" | "DOC";
