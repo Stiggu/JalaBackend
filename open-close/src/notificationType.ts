@@ -1,0 +1,1 @@
+﻿export type NotificationType = "Email" | "SMS" | "Twitter";
