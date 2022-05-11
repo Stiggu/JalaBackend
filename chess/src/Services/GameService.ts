@@ -14,14 +14,11 @@ export default class GameService extends Game implements IGameService {
     @inject(GameRepository) private GameRep: GameRepository | any;
 
     getGameInformation(): object {
-        return this.getGameStatus();
+        return this.getGameStatus("Current Board status");
     }
 
     move(color: Color, from: Position, to: Position): object {
-        return {
-            movementInformation: this.movePiece(color, from, to),
-            board: this.board
-        }
+        return this.movePiece(color, from, to);
     }
 
     createNewPlayer(name: string): object {

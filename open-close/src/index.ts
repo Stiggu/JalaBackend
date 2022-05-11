@@ -7,5 +7,5 @@ import EmailNotification from "./emailNotification";
 let user = new User();
 
 const notCenter = new NotificationCenter();
-notCenter.notify(new FacebookNotification(), user, 'test');
-notCenter.notify(new EmailNotification(), user, 'test');
+notCenter.notify(new FacebookNotification(), user, 'Notification test');
+notCenter.notify(new EmailNotification(), user, 'Notification test');

@@ -1,7 +1,10 @@
-import {Color, GameOutcome, GameState} from "./chess_types";
+import {Color, GameOutcome, GameState, GameStatus} from "./chess_types";
 import Board from "./board";
 import Player from "./player";
 import Position from "./position";
+import Reporter from "./reporter";
+import IBoardStatus from "./IBoardStatus";
+import IdHandler from "./idHandler";
 
 export default class Game {
     public id!: number
@@ -15,40 +18,28 @@ export default class Game {
         this.board = Game.createBoard()
     }
 
-    private static makeId(): number {
-        return Math.floor(Math.random() * 9999999999);
-    }
-    
-    protected startGame(){
+    protected startGame(): IBoardStatus{
+        // Starts the game
         this.gameOutcome = 'Waiting for Players';
         this.board.createBoard();
-        this.id = Game.makeId()
-        return this.getGameStatus();
+        this.id = IdHandler.makeID();
+        // Report
+        return this.getGameStatus("Game Has Been Started");
     }
 
     private static createBoard(): Board{
         return new Board();
     }
     
-    protected getGameStatus() {
-        return {
-            id: this.id,
-            outcome: this.gameOutcome,
-            players: this.players,
-            boardState: this.board.getBoardData()
-        }
+    protected getGameStatus(message: GameStatus): IBoardStatus {
+        return Reporter.currentStatus(message, this);
     }
 
-    protected movePiece(color: Color, from: Position, to:Position): object{
-        if(!this.started){
-            return {
-                status: "Game is not live yet."
-            };
-        }
-        
-        return {
-            isMoved: this.board.move(color, from, to),
-        }
+    protected movePiece(color: Color, from: Position, to:Position): IBoardStatus{
+        if(!this.started) return this.getGameStatus("Game is not live yet");
+        const hasMoved = this.board.move(color, from, to);
+        if(!hasMoved) this.getGameStatus("Invalid move");
+        return this.getGameStatus("Piece has been moved");
     }
     
     protected makePlayer(name: string): object{

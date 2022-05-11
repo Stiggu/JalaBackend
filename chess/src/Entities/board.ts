@@ -12,7 +12,7 @@ import rankMapper from "./rank_mapper";
 export default class Board {
     public board!: (null[] | Piece[])[];
     public currentTurn!: Color;
-    public turn: number = 0;
+    public turn!: number;
 
     constructor() {
     }
@@ -22,6 +22,7 @@ export default class Board {
     }
 
     createBoard(): void {
+        this.turn = 0;
         this.currentTurn = 'White';
         this.board = [
             [
