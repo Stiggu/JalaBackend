@@ -24,7 +24,7 @@ export default class Game {
         this.board.createBoard();
         this.id = IdHandler.makeID();
         // Report
-        return this.getGameStatus("Game Has Been Started");
+        return this.getGameStatus('Game Has Been Started');
     }
 
     private static createBoard(): Board{
@@ -36,18 +36,15 @@ export default class Game {
     }
 
     protected movePiece(color: Color, from: Position, to:Position): IBoardStatus{
-        if(!this.started) return this.getGameStatus("Game is not live yet");
+        if(!this.started) return this.getGameStatus('Game is not live yet');
         const hasMoved = this.board.move(color, from, to);
-        if(!hasMoved) this.getGameStatus("Invalid move");
-        return this.getGameStatus("Piece has been moved");
+        if(!hasMoved) return this.getGameStatus('Invalid move');
+        return this.getGameStatus('Piece has been moved');
     }
     
     protected makePlayer(name: string): object{
         if(this.players.length == 2){
-            return {
-                playerState: 'Game is Full!',
-                player: null,
-            }
+            return this.getGameStatus('Game is full!');
         }
         const newPlayer = new Player(name);
         if(this.players.filter(player => player.id === newPlayer.id).length > 0){
@@ -55,13 +52,10 @@ export default class Game {
         } else {
             this.players.push(newPlayer);
             if(this.players.length == 2){
-                this.gameOutcome = "Playing";
+                this.gameOutcome = 'Playing';
                 this.started = true;
             }
-            return {
-                player: newPlayer,
-                playerState: `Player ${newPlayer.name} has joined to the duel!`
-            };
+            return this.getGameStatus('A Player has joined the game!');
         }
     }
     

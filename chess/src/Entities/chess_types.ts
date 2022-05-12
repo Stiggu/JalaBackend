@@ -4,4 +4,4 @@ export type Color = 'Black' | 'White';
 export type PieceKind = 'King' | 'Queen' | 'Rook' | 'Bishop' | 'Knight' | 'Pawn';
 export type GameState = 'White\'s Turn' | 'Black\'s Turn';
 export type GameOutcome = 'Draw' | 'Black Wins' | 'White Wins' | 'Playing' | 'Waiting for Players' | 'Game hasn\'t started yet';
-export type GameStatus = 'Current Board status' | 'Piece has been moved' | 'Piece didn\'t move' | 'Game Has Been Started' | "Game is not live yet" | "Invalid move";
+export type GameStatus = 'Current Board status' | 'Piece has been moved' | 'Piece didn\'t move' | 'Game Has Been Started' | 'Game is not live yet' | 'Invalid move' | 'Game is full!' | 'A Player has joined the game!';

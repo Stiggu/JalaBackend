@@ -14,7 +14,7 @@ export default class GameService extends Game implements IGameService {
     @inject(GameRepository) private GameRep: GameRepository | any;
 
     getGameInformation(): object {
-        return this.getGameStatus("Current Board status");
+        return this.getGameStatus('Current Board status');
     }
 
     move(color: Color, from: Position, to: Position): object {

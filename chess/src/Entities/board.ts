@@ -1,4 +1,4 @@
-﻿import {Color} from "./chess_types";
+﻿import {Color, File, Rank} from "./chess_types";
 import Piece from "./piece";
 import Rook from "./rook";
 import Knight from "./knight";
@@ -7,10 +7,11 @@ import Queen from "./queen";
 import King from "./king";
 import Pawn from "./pawn";
 import Position from "./position";
-import rankMapper from "./rank_mapper";
+import {fileHelper, fileMapper, fileMapperReverse} from "./fileMapper";
 
 export default class Board {
     public board!: (null[] | Piece[])[];
+    public capturedPieces: Piece[] = [];
     public currentTurn!: Color;
     public turn!: number;
 
@@ -18,7 +19,7 @@ export default class Board {
     }
 
     getPieceAt(pos: Position): Piece | null {
-        return this.board[pos.getRank() - 1][rankMapper[pos.getFile()]];
+        return this.board[pos.getRank() - 1][fileMapper[pos.getFile()]];
     }
 
     createBoard(): void {
@@ -77,11 +78,32 @@ export default class Board {
             board: this.board,
         }
     }
+    
+    checkMatrixByStep(from: Position, to: Position): boolean{
+        const fromMappedFile = fileMapper[from.getFile()];
+        const toMappedFile = fileMapper[to.getFile()];
+        const distX = Math.abs(fromMappedFile - toMappedFile);
+        const distY = Math.abs(from.getRank() - to.getRank());
+        const signedDistX = Math.sign(toMappedFile - fromMappedFile);
+        const signedDistY = Math.sign( to.getRank() - from.getRank())
 
-    move(color: Color, from: Position, to: Position): boolean {
-        if (color != this.currentTurn) return false;
+        for (let square = 1; square <= Math.max(distX, distY); square++) {
+            const pieceInFrontX: File = fileMapperReverse[fromMappedFile + (square * signedDistX) as fileHelper] as File ;
+            const pieceInFrontY: Rank = from.getRank() + (square * signedDistY) as Rank;
+            const pos = new Position(pieceInFrontX, pieceInFrontY);
+            if(this.getPieceAt(pos) !== null){
+                return false;
+            }
+        }
+        
+        return true;
+    }
 
-        const pieceToMove = this.board[from.getRank() - 1][rankMapper[from.getFile()]];
+    move(currentTurnColour: Color, from: Position, to: Position): boolean {
+        if (currentTurnColour != this.currentTurn) return false;
+        const fromMappedFile = fileMapper[from.getFile()];
+        const toMappedFile = fileMapper[to.getFile()];
+        const pieceToMove = this.board[from.getRank() - 1][fromMappedFile];
 
         /* Check that the piece is not null
         * Or it's the same color as the player moving
@@ -93,15 +115,17 @@ export default class Board {
         if (!pieceToMove.canMove(to)) return false;
         if (this.getPieceAt(to) != null) return false;
 
+        const stepResult = this.checkMatrixByStep(from, to);
+        if(!stepResult) return false;
+        
         this.turn++;
-        if(color == 'White') this.currentTurn = 'Black';
-        if(color == 'Black') this.currentTurn = 'White';
+        if (currentTurnColour == 'White') this.currentTurn = 'Black';
+        if (currentTurnColour == 'Black') this.currentTurn = 'White';
 
         pieceToMove.setPiecePosition(to);
-        this.board[from.getRank() - 1][rankMapper[from.getFile()]] = null;
-        this.board[to.getRank() - 1][rankMapper[to.getFile()]] = pieceToMove;
         pieceToMove.setMoved();
-
+        this.board[from.getRank() - 1][fromMappedFile] = null;
+        this.board[to.getRank() - 1][toMappedFile] = pieceToMove;
         return true;
     }
 }
