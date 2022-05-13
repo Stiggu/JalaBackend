@@ -98,12 +98,6 @@ export default class Board {
     }
     
     isKingOnCheck(board: (null[] | Piece[])[], from: Position, to: Position, turn: Color): boolean{
-        const fromMappedFile = fileMapper[from.getFile()];
-        const toMappedFile = fileMapper[to.getFile()];
-        const pieceToMove = board[from.getRank() - 1][fromMappedFile];
-        board[from.getRank() - 1][fromMappedFile] = null;
-        board[to.getRank() - 1][toMappedFile] = pieceToMove;
-        
         let king!: King;
         if(turn == 'White'){
             king = this.kings[0];
@@ -118,6 +112,7 @@ export default class Board {
                 if(piece.getColor() == turn) continue;
                 if(!piece.canMove(king.getPosition())) continue;
                 const kingExposed = this.isPathAvailable(board, piece.getPosition(), king.getPosition());
+                console.log(kingExposed)
                 if(kingExposed) return true;
             }
         }
@@ -144,13 +139,12 @@ export default class Board {
         const stepResult = this.isPathAvailable(this.board, from, to);
         if(!stepResult) return "There is something in the way";
         
-        const mockBoard: (null[] | Piece[])[] = this.board.map(arr => arr.slice());
-         mockBoard[from.getRank() - 1][fromMappedFile] = null;
+        const mockBoard: (null[] | Piece[])[] = this.board.map(arr => arr.slice(0));
+        mockBoard[from.getRank() - 1][fromMappedFile] = null;
         mockBoard[to.getRank() - 1][toMappedFile] = pieceToMove;
-        
         const kingExposed:boolean = this.isKingOnCheck(mockBoard, from, to, this.currentTurn);
-        
         if(kingExposed) return 'Illegal Move, The king is exposed!';
+        
         this.turn++;
         if (currentTurnColour == 'White') this.currentTurn = 'Black';
         if (currentTurnColour == 'Black') this.currentTurn = 'White';
