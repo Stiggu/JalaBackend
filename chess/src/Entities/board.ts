@@ -1,13 +1,13 @@
-﻿import {Color, File, GameStatus, Rank} from "./chess_types";
-import Piece from "./piece";
-import Rook from "./rook";
-import Knight from "./knight";
-import Bishop from "./bishop";
-import Queen from "./queen";
-import King from "./king";
-import Pawn from "./pawn";
-import Position from "./position";
-import {fileHelper, fileMapper, fileMapperReverse} from "./fileMapper";
+﻿import {Color, File, GameStatus, Rank} from './chess_types';
+import Piece from './piece';
+import Rook from './rook';
+import Knight from './knight';
+import Bishop from './bishop';
+import Queen from './queen';
+import King from './king';
+import Pawn from './pawn';
+import Position from './position';
+import {fileHelper, fileMapper, fileMapperReverse} from './fileMapper';
 
 export default class Board {
     public board!: (null[] | Piece[])[];
@@ -24,6 +24,7 @@ export default class Board {
     }
 
     createBoard(): void {
+        this.kings = [];
         this.turn = 0;
         this.currentTurn = 'White';
         this.board = [
@@ -82,7 +83,7 @@ export default class Board {
         const distX = Math.abs(fromMappedFile - toMappedFile);
         const distY = Math.abs(from.getRank() - to.getRank());
         const signedDistX = Math.sign(toMappedFile - fromMappedFile);
-        const signedDistY = Math.sign(to.getRank() - from.getRank())
+        const signedDistY = Math.sign(to.getRank() - from.getRank());
 
         for (let square = 1; square < Math.max(distX, distY); square++) {
             const pieceInFrontX: File = fileMapperReverse[(fromMappedFile + (square * signedDistX)) as fileHelper] as File ;
@@ -112,7 +113,6 @@ export default class Board {
                 if(piece.getColor() == turn) continue;
                 if(!piece.canMove(king.getPosition())) continue;
                 const kingExposed = this.isPathAvailable(board, piece.getPosition(), king.getPosition());
-                console.log(kingExposed)
                 if(kingExposed) return true;
             }
         }
@@ -121,7 +121,7 @@ export default class Board {
     }
 
     move(currentTurnColour: Color, from: Position, to: Position): GameStatus {
-        if (currentTurnColour != this.currentTurn) return "Incorrect piece color";
+        if (currentTurnColour != this.currentTurn) return 'Incorrect piece color';
         const fromMappedFile = fileMapper[from.getFile()];
         const toMappedFile = fileMapper[to.getFile()];
         const pieceToMove = this.board[from.getRank() - 1][fromMappedFile];
@@ -131,13 +131,15 @@ export default class Board {
         * that can move to that spot
         * that the space is empty (to change with captures)
         */
-        if (pieceToMove === null) return "Invalid move";
-        if (pieceToMove.getColor() != this.currentTurn) return "Incorrect piece color";
-        if (!pieceToMove.canMove(to)) return "Illegal Move";
+        if (pieceToMove === null) return 'Invalid move';
+        if (pieceToMove.getColor() != this.currentTurn) return 'Incorrect piece color';
+        if (!pieceToMove.canMove(to)) return 'Illegal Move';
         if (this.getPieceAt(this.board, to) !== null) return 'It\'s not empty';
 
-        const stepResult = this.isPathAvailable(this.board, from, to);
-        if(!stepResult) return "There is something in the way";
+        if(pieceToMove.name != 'Knight'){
+            const stepResult = this.isPathAvailable(this.board, from, to);
+            if(!stepResult) return 'There is something in the way';
+        }
         
         const mockBoard: (null[] | Piece[])[] = this.board.map(arr => arr.slice(0));
         mockBoard[from.getRank() - 1][fromMappedFile] = null;
@@ -153,6 +155,6 @@ export default class Board {
         pieceToMove.setMoved();
         this.board[from.getRank() - 1][fromMappedFile] = null;
         this.board[to.getRank() - 1][toMappedFile] = pieceToMove;
-        return "Piece has been moved";
+        return 'Piece has been moved';
     }
 }
