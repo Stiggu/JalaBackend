@@ -37,12 +37,11 @@ export default class Game {
 
     protected movePiece(color: Color, from: Position, to:Position): IBoardStatus{
         if(!this.started) return this.getGameStatus('Game is not live yet');
-        const hasMoved = this.board.move(color, from, to);
-        if(!hasMoved) return this.getGameStatus('Invalid move');
-        return this.getGameStatus('Piece has been moved');
+        const movementAnswer = this.board.move(color, from, to);
+        return this.getGameStatus(movementAnswer);
     }
     
-    protected makePlayer(name: string): object{
+    protected makePlayer(name: string): IBoardStatus{
         if(this.players.length == 2){
             return this.getGameStatus('Game is full!');
         }
@@ -58,5 +57,4 @@ export default class Game {
             return this.getGameStatus('A Player has joined the game!');
         }
     }
-    
 }

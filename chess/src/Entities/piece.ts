@@ -11,6 +11,10 @@ export default abstract class Piece {
         this.hasMoved = false;
         this.isCaptured = false;
     }
+    
+    getPosition(): Position{
+        return this.position;
+    }
 
     moveTo(position: Position): void{
         this.setMoved();

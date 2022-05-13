@@ -24,8 +24,7 @@ app.get('/api/v1/info', (req, res) => {
 });
 
 app.post('/api/v1/join', jsonParser, (req, res) => {
-    game.createNewPlayer(req.body.name)
-    res.send(game.players);
+    res.send(game.createNewPlayer(req.body.name));
 });
 
 app.post('/api/v1/move', jsonParser, (req, res) => {
