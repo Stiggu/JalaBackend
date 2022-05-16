@@ -1,15 +1,15 @@
-﻿import {Color, File, GameStatus, Rank} from './chess_types';
-import Piece from './piece';
-import Rook from './rook';
-import Knight from './knight';
-import Bishop from './bishop';
-import Queen from './queen';
-import King from './king';
-import Pawn from './pawn';
-import Position from './position';
-import {fileHelper, fileMapper, fileMapperReverse} from './fileMapper';
+﻿import Piece from "../Entities/piece";
+import {Color, File, GameStatus, Rank} from "../Entities/chess_types";
+import King from "../Entities/king";
+import Position from "../Entities/position";
+import {fileHelper, fileMapper, fileMapperReverse} from "../Entities/fileMapper";
+import Rook from "../Entities/rook";
+import Knight from "../Entities/knight";
+import Bishop from "../Entities/bishop";
+import Queen from "../Entities/queen";
+import Pawn from "../Entities/pawn";
 
-export default class Board {
+export default class BoardService {
     public board!: (null[] | Piece[])[];
     public capturedPieces: Piece[] = [];
     public currentTurn!: Color;
@@ -76,7 +76,7 @@ export default class Board {
         this.kings.push(new King('King', 'White', 'E', 1));
         this.kings.push(new King('King', 'Black', 'E', 8));
     }
-    
+
     isPathAvailable(board:(null[] | Piece[])[], from: Position, to: Position): boolean{
         const fromMappedFile = fileMapper[from.getFile()];
         const toMappedFile = fileMapper[to.getFile()];
@@ -94,10 +94,10 @@ export default class Board {
                 return false;
             }
         }
-        
+
         return true;
     }
-    
+
     isKingOnCheck(board: (null[] | Piece[])[], from: Position, to: Position, turn: Color): boolean{
         let king!: King;
         if(turn == 'White'){
@@ -116,7 +116,7 @@ export default class Board {
                 if(kingExposed) return true;
             }
         }
-        
+
         return false;
     }
 
@@ -140,13 +140,13 @@ export default class Board {
             const stepResult = this.isPathAvailable(this.board, from, to);
             if(!stepResult) return 'There is something in the way';
         }
-        
+
         const mockBoard: (null[] | Piece[])[] = this.board.map(arr => arr.slice(0));
         mockBoard[from.getRank() - 1][fromMappedFile] = null;
         mockBoard[to.getRank() - 1][toMappedFile] = pieceToMove;
         const kingExposed:boolean = this.isKingOnCheck(mockBoard, from, to, this.currentTurn);
         if(kingExposed) return 'Illegal Move, The king is exposed!';
-        
+
         this.turn++;
         if (currentTurnColour == 'White') this.currentTurn = 'Black';
         if (currentTurnColour == 'Black') this.currentTurn = 'White';

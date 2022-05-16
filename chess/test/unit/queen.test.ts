@@ -1,9 +1,9 @@
-import Position from '../../src/position';
-import Queen from '../../src/queen';
+import Queen from "../../src/Entities/queen";
+import Position from "../../src/Entities/position";
 
 describe('Queen tests', () => {
 
-    const queen = new Queen('White', 'D', 1);
+    const queen = new Queen('Queen', 'White', 'D', 1);
     
     it("Should move vertically", () => {
         const position = new Position('D', 8);

@@ -1,9 +1,9 @@
-import Position from '../../src/position';
-import Bishop from '../../src/bishop';
+import Bishop from "../../src/Entities/bishop";
+import Position from "../../src/Entities/position";
 
 describe('Bishop tests', () => {
 
-    const bishop = new Bishop('White', 'D', 1);
+    const bishop = new Bishop('Bishop','White', 'D', 1);
     
     it("Shouldnt move vertically", () => {
         const position = new Position('D', 8);

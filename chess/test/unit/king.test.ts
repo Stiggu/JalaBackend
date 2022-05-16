@@ -1,7 +1,7 @@
-import King from '../../src/king';
-import Position from '../../src/position';
+import King from "../../src/Entities/king";
+import Position from "../../src/Entities/position";
 
-const king = new King('White', 'E', 1);
+const king = new King('King','White', 'E', 1);
 
 it("Should move forward", () => {
     const position = new Position('E', 2);

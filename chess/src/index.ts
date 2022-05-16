@@ -11,7 +11,7 @@ const jsonParser = bodyParser.json();
 let game = new GameService();
 
 app.get('/api/v1/start', (req, res) => {
-    res.send(game.start());
+    res.send(game.startGame());
 });
 
 app.get('/api/v1/restart', (req, res) => {
@@ -20,22 +20,22 @@ app.get('/api/v1/restart', (req, res) => {
 });
 
 app.get('/api/v1/info', (req, res) => {
-    res.send(game.getGameInformation());
+    res.send(game.getGameStatus('Current Board status'));
 });
 
 app.post('/api/v1/join', jsonParser, (req, res) => {
-    res.send(game.createNewPlayer(req.body.name));
+    res.send(game.makePlayer(req.body.name));
 });
 
 app.post('/api/v1/move', jsonParser, (req, res) => {
     const from = new Position(req.body.from.file, req.body.from.rank);
     const to = new Position(req.body.to.file, req.body.to.rank)
-    res.send(game.move(req.body.color, from, to));
+    res.send(game.movePiece(req.body.color, from, to));
 });
 
 app.post('/api/v1/piece', jsonParser, (req, res) => {
     const pos = new Position(req.body.file,req.body.rank);
-    res.send(game.getPiece(pos));
+    res.send(game.board.getPieceAt(pos));
 });
 
 app.listen(port, () => {

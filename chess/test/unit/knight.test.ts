@@ -1,9 +1,9 @@
-import Position from '../../src/position';
-import Knight from '../../src/knight';
+import Knight from "../../src/Entities/knight";
+import Position from "../../src/Entities/position";
 
 describe('Knight tests', () => {
 
-    const knight = new Knight('White', 'D', 1);
+    const knight = new Knight('Knight','White', 'D', 1);
     
     it("Should move UP L left", () => {
         const position = new Position('C', 3);

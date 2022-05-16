@@ -1,9 +1,9 @@
-import Position from '../../src/position';
-import Rook from '../../src/rook';
+import Rook from "../../src/Entities/rook";
+import Position from "../../src/Entities/position";
 
 describe('Rook tests', () => {
 
-    const rook = new Rook('White', 'D', 3);
+    const rook = new Rook('Rook','White', 'D', 3);
     
     it("Should move vertically", () => {
         const position = new Position('D', 8);

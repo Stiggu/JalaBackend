@@ -1,9 +1,9 @@
-import Position from '../../src/position';
-import Pawn from '../../src/pawn';
+import Position from "../../src/Entities/position";
+import Pawn from "../../src/Entities/pawn";
 
 describe('Pawn tests', () => {
 
-    const pawn = new Pawn('White', 'D', 1);
+    const pawn = new Pawn('Pawn','White', 'D', 1);
     
     it("Shouldnt move UP L left", () => {
         const position = new Position('C', 3);
