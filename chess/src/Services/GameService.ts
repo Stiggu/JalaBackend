@@ -5,34 +5,39 @@ import {Color, GameOutcome, GameStatus} from "../Entities/chess_types";
 import Position from "../Entities/position";
 import IBoardStatus from "../Entities/IBoardStatus";
 import Player from "../Entities/player";
-import IdHandler from "../Entities/idHandler";
 import Reporter from "./reporter";
 import BoardService from "./BoardService";
+import HandlerService from "./idHandlerService";
+import { MAX_PLAYERS } from "../Entities/chess_globals";
 
 export default class GameService implements IGameService {
 
     @inject(GameRepository) private GameRep: GameRepository | any;
 
-    public id!: number
-    public board: BoardService;
-    public players: Player[] = [];
+    id!: number
+    board: BoardService;
+    players: Player[] = [];
     gameOutcome: GameOutcome;
     started: boolean = false;
+    handler: HandlerService = new HandlerService();
 
     constructor(){
         this.gameOutcome = 'Game hasn\'t started yet';
         this.board = this.createBoard()
     }
 
+    getPlayerCount() {
+        return this.players.length;
+    }
+    
     startGame(): IBoardStatus{
         // Starts the game
         this.gameOutcome = 'Waiting for Players';
-        this.board.createBoard();
-        this.id = IdHandler.makeID();
+        this.board.resetBoard();
+        this.id = this.handler.makeID();
         // Report
         return this.getGameStatus('Game Has Been Started');
     }
-    
 
     createBoard(): BoardService{
         return new BoardService();
@@ -42,27 +47,28 @@ export default class GameService implements IGameService {
         return Reporter.currentStatus(message, this);
     }
 
-    movePiece(color: Color, from: Position, to:Position): IBoardStatus{
-        if(!this.started) return this.getGameStatus('Game is not live yet');
-        const movementAnswer = this.board.move(color, from, to);
+    movePiece(team: Color, fromPosition: Position, toPosition:Position): IBoardStatus{
+        if(!this.started) {
+            return this.getGameStatus('Game is not live yet');
+        }
+        const movementAnswer = this.board.movePieceTo(team, fromPosition, toPosition);
         return this.getGameStatus(movementAnswer);
     }
 
-    makePlayer(name: string): IBoardStatus{
-        if(this.players.length == 2){
+    makePlayer(name: string): IBoardStatus {
+        if(this.getPlayerCount() == MAX_PLAYERS){
             return this.getGameStatus('Game is full!');
         }
+        
         const newPlayer = new Player(name);
-        if(this.players.filter(player => player.id === newPlayer.id).length > 0){
-            return this.makePlayer(name);
-        } else {
-            this.players.push(newPlayer);
-            if(this.players.length == 2){
-                this.gameOutcome = 'Playing';
-                this.started = true;
-            }
-            return this.getGameStatus('A Player has joined the game!');
+        this.players.push(newPlayer);
+        
+        if(this.getPlayerCount() == MAX_PLAYERS){
+            this.gameOutcome = 'Playing';
+            this.started = true;
         }
+        
+        return this.getGameStatus('A Player has joined the game!');
     }
     
 

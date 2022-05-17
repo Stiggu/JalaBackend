@@ -12,10 +12,10 @@ export default interface IBoard {
     kings: King[],
 
     // Functions
-    getPieceAt(board: (null[] | Piece[])[], pos: Position): Piece | null,
-    createBoard(): void,
+    getPieceAt(pos: Position): Piece | null,
+    resetBoard(): void,
     isPathAvailable(board:(null[] | Piece[])[], from: Position, to: Position): boolean,
     isKingOnCheck(board: (null[] | Piece[])[], from: Position, to: Position, turn: Color): boolean,
-    move(currentTurnColour: Color, from: Position, to: Position): GameStatus,
+    movePieceTo(team: Color, fromPosition: Position, toPosition: Position): GameStatus,
     
 }

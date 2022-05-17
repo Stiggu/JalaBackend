@@ -28,9 +28,9 @@ app.post('/api/v1/join', jsonParser, (req, res) => {
 });
 
 app.post('/api/v1/move', jsonParser, (req, res) => {
-    const from = new Position(req.body.from.file, req.body.from.rank);
-    const to = new Position(req.body.to.file, req.body.to.rank)
-    res.send(game.movePiece(req.body.color, from, to));
+    const fromPosition = new Position(req.body.from.file, req.body.from.rank);
+    const toPosition = new Position(req.body.to.file, req.body.to.rank)
+    res.send(game.movePiece(req.body.color, fromPosition, toPosition));
 });
 
 app.post('/api/v1/piece', jsonParser, (req, res) => {
