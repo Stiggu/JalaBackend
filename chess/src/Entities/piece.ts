@@ -32,6 +32,19 @@ export default abstract class Piece {
     getColor(): Color{
         return this.color;
     }
+    
+    getDistranceBetween(startPosition: Position, endPosition: Position): number[] {
+        const distanceX = Math.abs(endPosition.getFile().charCodeAt(0) - startPosition.getFile().charCodeAt(0));
+        const distanceY = Math.abs(endPosition.getRank() - startPosition.getRank());
+        return [distanceX, distanceY];
+    }
+
+    getDirectionBetween(startPosition: Position, endPosition: Position): number[] {
+        const directionX = Math.sign(endPosition.getFile().charCodeAt(0) - startPosition.getFile().charCodeAt(0));
+        const directionY = Math.sign(endPosition.getRank() - startPosition.getRank());
+        return [directionX, directionY];
+    }
 
     abstract canMove(position: Position): boolean;
+    abstract canCapture(piece: Piece): boolean;
 }

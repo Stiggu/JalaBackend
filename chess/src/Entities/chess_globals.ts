@@ -13,3 +13,7 @@ export const PIECES = {
     'KNIGHT': 'Knight',
     'PAWN': 'Pawn',
 }
+export const WHITE_KING = 0;
+export const BLACK_KING = 1;
+export const RANK_OFFSET = 1;
+export const FIRST_TURN = 0;

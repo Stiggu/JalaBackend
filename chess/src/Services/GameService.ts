@@ -8,7 +8,7 @@ import Player from "../Entities/player";
 import Reporter from "./reporter";
 import BoardService from "./BoardService";
 import HandlerService from "./idHandlerService";
-import { MAX_PLAYERS } from "../Entities/chess_globals";
+import {MAX_PLAYERS} from "../Entities/chess_globals";
 
 export default class GameService implements IGameService {
 
@@ -21,7 +21,7 @@ export default class GameService implements IGameService {
     started: boolean = false;
     handler: HandlerService = new HandlerService();
 
-    constructor(){
+    constructor() {
         this.gameOutcome = 'Game hasn\'t started yet';
         this.board = this.createBoard()
     }
@@ -29,8 +29,8 @@ export default class GameService implements IGameService {
     getPlayerCount() {
         return this.players.length;
     }
-    
-    startGame(): IBoardStatus{
+
+    startGame(): IBoardStatus {
         // Starts the game
         this.gameOutcome = 'Waiting for Players';
         this.board.resetBoard();
@@ -39,7 +39,7 @@ export default class GameService implements IGameService {
         return this.getGameStatus('Game Has Been Started');
     }
 
-    createBoard(): BoardService{
+    createBoard(): BoardService {
         return new BoardService();
     }
 
@@ -47,30 +47,26 @@ export default class GameService implements IGameService {
         return Reporter.currentStatus(message, this);
     }
 
-    movePiece(team: Color, fromPosition: Position, toPosition:Position): IBoardStatus{
-        if(!this.started) {
-            return this.getGameStatus('Game is not live yet');
-        }
+    movePiece(team: Color, fromPosition: Position, toPosition: Position): IBoardStatus {
+        if (!this.started) return this.getGameStatus('Game is not live yet');
         const movementAnswer = this.board.movePieceTo(team, fromPosition, toPosition);
         return this.getGameStatus(movementAnswer);
     }
 
     makePlayer(name: string): IBoardStatus {
-        if(this.getPlayerCount() == MAX_PLAYERS){
-            return this.getGameStatus('Game is full!');
-        }
+        if (this.getPlayerCount() === MAX_PLAYERS) return this.getGameStatus('Game is full!');
         
         const newPlayer = new Player(name);
         this.players.push(newPlayer);
-        
-        if(this.getPlayerCount() == MAX_PLAYERS){
+
+        if (this.getPlayerCount() === MAX_PLAYERS) {
             this.gameOutcome = 'Playing';
             this.started = true;
         }
-        
+
         return this.getGameStatus('A Player has joined the game!');
     }
-    
+
 
     // getPiece(pos: Position): Piece | null {
     //     return this.board.getPieceAt(this.board.board, pos);

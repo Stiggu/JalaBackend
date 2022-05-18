@@ -3,9 +3,24 @@ import Position from "./position";
 
 export default class Knight extends Piece {
     canMove(position: Position): boolean {
-        return (Math.abs(position.getFile().charCodeAt(0) - this.position.getFile().charCodeAt(0)) == 2 
-                && Math.abs(position.getRank() - this.position.getRank()) == 1)
-                || (Math.abs(position.getFile().charCodeAt(0) - this.position.getFile().charCodeAt(0)) == 1 
-                && Math.abs(position.getRank() - this.position.getRank()) == 2); 
+
+        const [distanceX, distanceY] = this.getDistranceBetween(position, this.position);
+
+        if(distanceX === 0 && distanceX === 0){
+            return false;
+        }
+        
+        const horizontalL = distanceX === 2 && distanceY === 1;
+        const verticalL = distanceX === 1 && distanceY === 2;
+        
+        return horizontalL || verticalL;
+    }
+
+    canCapture(piece: Piece): boolean {
+        if(this.getColor() === piece.getColor()){
+            return false;
+        }
+
+        return this.canMove(piece.getPosition());
     }
 }

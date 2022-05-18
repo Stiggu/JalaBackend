@@ -3,6 +3,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import GameService from "./Services/GameService";
 import Position from "./Entities/position";
+import {AppDataSource} from "./Infrastructure/DB/sqlite/data-source";
 
 const app = express();
 const port = 8080;
@@ -38,6 +39,11 @@ app.post('/api/v1/piece', jsonParser, (req, res) => {
     res.send(game.board.getPieceAt(pos));
 });
 
-app.listen(port, () => {
-    console.log(`Listening on http://127.0.0.1:${port}/api/v1/start`);
-});
+AppDataSource.initialize()
+    .then(() => {
+        app.listen(port, () => {
+            console.log(`Listening on http://127.0.0.1:${port}/api/v1/start`);
+        });
+    })
+    .catch((error) => console.log(error))
+

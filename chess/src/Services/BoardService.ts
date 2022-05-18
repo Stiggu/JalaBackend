@@ -9,12 +9,20 @@ import Bishop from "../Entities/bishop";
 import Queen from "../Entities/queen";
 import Pawn from "../Entities/pawn";
 import IBoard from "../Entities/IBoard";
-import {EMPTY, PATH_START_POSITION, TEAMS} from "../Entities/chess_globals";
+import {
+    BLACK_KING,
+    EMPTY, FIRST_TURN,
+    PATH_START_POSITION,
+    PIECES,
+    RANK_OFFSET,
+    TEAMS,
+    WHITE_KING
+} from "../Entities/chess_globals";
 
 export default class BoardService implements IBoard {
     board!: BoardSquares;
     capturedPieces: Piece[] = [];
-    currentTurn!: Color;
+    currentTeamTurn!: Color;
     turn!: number;
     kings: King[] = [];
 
@@ -22,12 +30,14 @@ export default class BoardService implements IBoard {
     }
 
     getPieceAt(pos: Position): Piece | null {
-        return this.board[pos.getRank() - 1][fileMapper[pos.getFile()]];
+        const [file] = this.fileToMatrix(pos);
+        const [rank] = this.rankToMatrix(pos);
+        return this.board[rank][file];
     }
 
     resetBoard(): void {
-        this.turn = 0;
-        this.currentTurn = 'White';
+        this.turn = FIRST_TURN;
+        this.currentTeamTurn = TEAMS.WHITE as Color;
         this.createNewBoard();
         this.createNewKings();
     }
@@ -87,99 +97,120 @@ export default class BoardService implements IBoard {
         this.kings.push(new King('King', 'Black', 'E', 8));
     }
 
+    // TODO Move to another service
+    fileToMatrix(...filePosition: Position[]): number[] {
+        return filePosition.map(p => fileMapper[p.getFile()]);
+    }
+
+    rankToMatrix(...rankPosition: Position[]): number[] {
+        return rankPosition.map(p => p.getRank() - RANK_OFFSET);
+    }
+
+    matrixToFile(file: number, direction: number, spot: number): File {
+        return fileMapperReverse[(file + (spot * direction)) as fileHelper] as File;
+    }
+
     calculateDistance(fromFile: number, fromRank: number, toFile: number, toRank: number): number[] {
         return [Math.abs(fromFile - toFile), Math.abs(fromRank - toRank)]
     }
 
-    isPathAvailable(board: (null[] | Piece[])[], fromPosition: Position, toPosition: Position): boolean {
-        const fromFile = this.fileToMatrix(fromPosition);
-        const toFile = this.fileToMatrix(toPosition);
+    getEnemyKing(team: Color): King {
+        if (team === TEAMS.WHITE) {
+            return this.kings[WHITE_KING];
+        } else {
+            return this.kings[BLACK_KING];
+        }
+    }
+
+    isPositionEmpty(pos: Position): boolean {
+        return this.getPieceAt(pos) == EMPTY;
+    }
+    //
+
+    isPathAvailable(board: BoardSquares, fromPosition: Position, toPosition: Position): boolean {
+        const [fromFile, toFile] = this.fileToMatrix(fromPosition, toPosition);
         const [distanceX, distanceY] = this.calculateDistance(fromFile, fromPosition.getRank(), toFile, toPosition.getRank());
         const signedDistanceX = Math.sign(toFile - fromFile);
         const signedDistanceY = Math.sign(toPosition.getRank() - fromPosition.getRank());
 
         for (let square = PATH_START_POSITION; square < Math.max(distanceX, distanceY); square++) {
-            const pieceInFrontX: File = fileMapperReverse[(fromFile + (square * signedDistanceX)) as fileHelper] as File;
+            const pieceInFrontX: File = this.matrixToFile(fromFile, signedDistanceX, square);
             const pieceInFrontY: Rank = fromPosition.getRank() + (square * signedDistanceY) as Rank;
             const pos = new Position(pieceInFrontX, pieceInFrontY);
-            if (this.getPieceAt(pos) != EMPTY) {
+            if (!this.isPositionEmpty(pos)) {
                 return false;
             }
         }
-
         return true;
     }
 
-    isKingOnCheck(board: (null[] | Piece[])[], fromPosition: Position, toPosition: Position, team: Color): boolean {
-        let king!: King;
-        if (team == 'White') {
-            king = this.kings[0];
-        } else {
-            king = this.kings[1];
-        }
+    isKingOnCheck(board: BoardSquares, fromPosition: Position, toPosition: Position, team: Color): boolean {
+        for (let row = 0; row < board.length; row++) {
+            for (let column = 0; column < board[row].length; column++) {
+                if (board[row][column] === EMPTY) continue;
 
-        for (let x = 0; x < board.length; x++) {
-            for (let y = 0; y < board[x].length; y++) {
-                if (board[x][y] == null) continue;
-                const piece = board[x][y] as Piece;
-                if (piece.getColor() == team) continue;
-                if (!piece.canMove(king.getPosition())) continue;
-                const kingExposed = this.isPathAvailable(board, piece.getPosition(), king.getPosition());
+                const piece = board[row][column] as Piece;
+                const enemyKing: King = this.getEnemyKing(piece.getColor())
+
+                if (piece.getColor() === team) continue;
+                if (!piece.canMove(enemyKing.getPosition())) continue;
+                const kingExposed = this.isPathAvailable(board, piece.getPosition(), enemyKing.getPosition());
                 if (kingExposed) return true;
             }
         }
-
         return false;
     }
 
-    // PENDING MOVE TO ANOTHER SERVICE
-    fileToMatrix(filePosition: Position): number {
-        return fileMapper[filePosition.getFile()];
-    }
-    
     copyMainBoard(): BoardSquares {
         return this.board.map(arr => arr.slice(0));
     }
 
+    advanceTurn(): void {
+        this.turn++;
+
+        if (this.currentTeamTurn === TEAMS.WHITE) {
+            this.currentTeamTurn = TEAMS.BLACK as Color;
+        } else if (this.currentTeamTurn === TEAMS.BLACK) {
+            this.currentTeamTurn = TEAMS.WHITE as Color;
+        }
+    }
+
+    move(pieceToMove: Piece, fromPosition: Position, toPosition: Position): void {
+        const [fromFile, toFile] = this.fileToMatrix(fromPosition, toPosition);
+        const [fromRank, toRank] = this.rankToMatrix(fromPosition, toPosition);
+        pieceToMove.setPiecePosition(toPosition);
+        pieceToMove.setMoved();
+        this.board[fromRank][fromFile] = EMPTY;
+        this.board[toRank][toFile] = pieceToMove;
+    }
+
     movePieceTo(team: Color, fromPosition: Position, toPosition: Position): GameStatus {
-        if (team != this.currentTurn) return 'Incorrect piece color';
-        const fromFile = this.fileToMatrix(fromPosition);
-        const toFile = this.fileToMatrix(toPosition);
-        const pieceToMove = this.board[fromPosition.getRank() - 1][fromFile];
-
-        /* Check that the piece is not null
-        * Or it's the same color as the player moving
-        * that can move to that spot
-        * that the space is empty (to change with captures)
-        */
+        if (team !== this.currentTeamTurn) return 'Incorrect piece color';
+        const [fromFile, toFile] = this.fileToMatrix(fromPosition, toPosition);
+        const [fromRank, toRank] = this.rankToMatrix(fromPosition, toPosition);
+        const pieceToMove = this.board[fromRank][fromFile];
+        
         if (pieceToMove === EMPTY) return 'Spot it empty';
-        if (pieceToMove.getColor() != this.currentTurn) return 'Incorrect piece color';
+        if (pieceToMove.getColor() !== this.currentTeamTurn) return 'Incorrect piece color';
         if (!pieceToMove.canMove(toPosition)) return 'Illegal Move';
-        if (this.getPieceAt(toPosition) !== EMPTY) return 'It\'s not empty';
+        
+        // TODO Capture logic
+        if (!this.isPositionEmpty(toPosition)) return 'It\'s not empty';
 
-        if (pieceToMove.name != 'Knight') {
+        if (pieceToMove.name !== PIECES.KNIGHT) {
             const stepResult = this.isPathAvailable(this.board, fromPosition, toPosition);
             if (!stepResult) return 'There is something in the way';
         }
 
         const mockBoard: BoardSquares = this.copyMainBoard();
-        mockBoard[fromPosition.getRank() - 1][fromFile] = EMPTY;
-        mockBoard[toPosition.getRank() - 1][toFile] = pieceToMove;
-        const kingExposed: boolean = this.isKingOnCheck(mockBoard, fromPosition, toPosition, this.currentTurn);
+        mockBoard[fromRank][fromFile] = EMPTY;
+        mockBoard[toRank][toFile] = pieceToMove;
+        const kingExposed: boolean = this.isKingOnCheck(mockBoard, fromPosition, toPosition, this.currentTeamTurn);
         if (kingExposed) return 'Illegal Move, The king is exposed!';
 
-        this.turn++;
+        this.advanceTurn();
+        this.move(pieceToMove, fromPosition, toPosition);
 
-        if (team == TEAMS.WHITE) {
-            this.currentTurn = TEAMS.BLACK as Color;
-        } else if (team == TEAMS.BLACK) {
-            this.currentTurn = TEAMS.WHITE as Color;
-        }
-
-        pieceToMove.setPiecePosition(toPosition);
-        pieceToMove.setMoved();
-        this.board[fromPosition.getRank() - 1][fromFile] = EMPTY;
-        this.board[toPosition.getRank() - 1][toFile] = pieceToMove;
         return 'Piece has been moved';
     }
 }

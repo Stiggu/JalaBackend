@@ -3,13 +3,24 @@ import Piece from './piece';
 
 export default class Rook extends Piece{
     canMove(position: Position): boolean {
-        
-        if(position.getRank() == this.position.getRank() && position.getFile() == this.position.getFile()){
+
+        const [directionX, directionY] = this.getDirectionBetween(position, this.position);
+
+        if(directionX === 0 && directionY === 0){
             return false;
         }
 
-        return (position.getRank() != this.position.getRank() || position.getFile() != this.position.getFile())
-        && position.getFile().charCodeAt(0) == this.position.getFile().charCodeAt(0)
-        || position.getRank() == this.position.getRank();
+        const horizontal = directionX !== 0 && directionY === 0;
+        const vertical = directionX === 0 && directionY !== 0;
+        
+        return horizontal || vertical;
+    }
+
+    canCapture(piece: Piece): boolean {
+        if(this.getColor() === piece.getColor()){
+            return false;
+        }
+
+        return this.canMove(piece.getPosition());
     }
 }
