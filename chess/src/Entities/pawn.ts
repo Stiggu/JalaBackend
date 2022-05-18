@@ -9,15 +9,25 @@ export default class Pawn extends Piece{
         
         if ( distanceX !== 0) return false;
         
-        if(this.getColor() == TEAMS.WHITE && distanceY === 1){
-            return true;
-        } else if(this.getColor() == TEAMS.BLACK && distanceY === -1){
-            return true;
+        if(this.getColor() == TEAMS.WHITE){
+            return distanceY === 1;
+        } else {
+            return distanceY === -1;
         }
-        return false;
     }
 
     canCapture(piece: Piece): boolean {
-        return false;
+        if(this.getColor() === piece.getColor()){
+            return false;
+        }
+        
+        const distanceX = piece.getPosition().getFile().charCodeAt(0) - this.position.getFile().charCodeAt(0);
+        const distanceY = piece.getPosition().getRank() - this.position.getRank();
+
+        if(this.getColor() == TEAMS.WHITE){
+            return distanceX === 1 && distanceY === 1;
+        } else {
+            return distanceX === -1 && distanceY === -1;
+        }
     }
 }

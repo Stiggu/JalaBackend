@@ -1,4 +1,5 @@
-﻿import { injectable } from "inversify";
+﻿import "reflect-metadata";
+import { injectable } from "inversify";
 import IRepository from "../../../Repository/Interfaces/IRepository";
 
 @injectable()
