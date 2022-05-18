@@ -1,7 +1,7 @@
-import {GameOutcome} from "./chess_types";
-import Board from "./board";
-import Player from "./player";
 import {Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn} from "typeorm";
+import Board from "./board.model";
+import Player from "../player";
+import {GameOutcome} from "../chess_types";
 
 @Entity()
 export default class Game {
