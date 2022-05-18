@@ -36,7 +36,7 @@ app.post('/api/v1/move', jsonParser, (req, res) => {
 
 app.post('/api/v1/piece', jsonParser, (req, res) => {
     const pos = new Position(req.body.file,req.body.rank);
-    res.send(game.board.getPieceAt(pos));
+    res.send(game.board.getPieceAt(game.board.board, pos));
 });
 
 AppDataSource.initialize()

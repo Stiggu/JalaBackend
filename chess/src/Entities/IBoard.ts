@@ -12,7 +12,7 @@ export default interface IBoard {
     kings: King[],
 
     // Functions
-    getPieceAt(pos: Position): Piece | null,
+    getPieceAt(board:BoardSquares, pos: Position): Piece | null,
     resetBoard(): void,
     isPathAvailable(board:BoardSquares, from: Position, to: Position): boolean,
     isKingOnCheck(board: BoardSquares, from: Position, to: Position, turn: Color): boolean,

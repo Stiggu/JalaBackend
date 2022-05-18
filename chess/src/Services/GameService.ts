@@ -48,13 +48,17 @@ export default class GameService implements IGameService {
     }
 
     movePiece(team: Color, fromPosition: Position, toPosition: Position): IBoardStatus {
-        if (!this.started) return this.getGameStatus('Game is not live yet');
+        if (!this.started){
+            return this.getGameStatus('Game is not live yet');
+        }
         const movementAnswer = this.board.movePieceTo(team, fromPosition, toPosition);
         return this.getGameStatus(movementAnswer);
     }
 
     makePlayer(name: string): IBoardStatus {
-        if (this.getPlayerCount() === MAX_PLAYERS) return this.getGameStatus('Game is full!');
+        if (this.getPlayerCount() === MAX_PLAYERS){
+            return this.getGameStatus('Game is full!');
+        }
         
         const newPlayer = new Player(name);
         this.players.push(newPlayer);
