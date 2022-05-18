@@ -1,6 +1,6 @@
 import { DataSource } from 'typeorm';
-import Game from "../../../Entities/game";
-import Board from "../../../Entities/board";
+import Board from "../../../Entities/Models/board.model";
+import Game from "../../../Entities/Models/game.model";
 
 export const AppDataSource = new DataSource({
     type: "sqlite",
