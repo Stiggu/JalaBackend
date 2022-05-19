@@ -28,7 +28,7 @@ export default class BoardService implements IBoard {
     constructor() {
     }
 
-    getPieceAt(board:BoardSquares, pos: Position): Piece | null {
+    getPieceAt(board: BoardSquares, pos: Position): Piece | null {
         const [file] = Calculator.fileToMatrix(pos);
         const [rank] = Calculator.rankToMatrix(pos);
         return board[rank][file];
@@ -97,7 +97,7 @@ export default class BoardService implements IBoard {
     }
 
     // TODO Move to another service
-    
+
     //
 
     getEnemyKing(team: Color): King {
@@ -108,7 +108,7 @@ export default class BoardService implements IBoard {
         }
     }
 
-    isPositionEmpty(board: BoardSquares,pos: Position): boolean {
+    isPositionEmpty(board: BoardSquares, pos: Position): boolean {
         return this.getPieceAt(board, pos) == EMPTY;
     }
 
@@ -143,7 +143,7 @@ export default class BoardService implements IBoard {
 
                 const kingExposed = this.isPathAvailable(board, piece.getPosition(), enemyKing.getPosition());
 
-                if (kingExposed){
+                if (kingExposed) {
                     return true;
                 }
             }
@@ -180,14 +180,6 @@ export default class BoardService implements IBoard {
         if (pieceToMove.getColor() !== this.currentTeamTurn) {
             return 'Incorrect piece color';
         }
-        if (!pieceToMove.canMove(toPosition)) {
-            return 'Illegal Move';
-        }
-
-        // TODO Capture logic
-        if (!this.isPositionEmpty(this.board, toPosition)) {
-            return 'It\'s not empty';
-        }
 
         if (pieceToMove.name !== PIECES.KNIGHT) {
             const stepResult = this.isPathAvailable(this.board, fromPosition, toPosition);
@@ -203,9 +195,28 @@ export default class BoardService implements IBoard {
         if (kingExposed) {
             return 'Illegal Move, The king is exposed!';
         }
+        
+        let canCapture = false;
+        if (!this.isPositionEmpty(this.board, toPosition)) {
+            
+            const pieceToCapture = this.getPieceAt(this.board, toPosition) as Piece;
+            
+            if(pieceToMove.canCapture(pieceToCapture)){
+                canCapture = true;
+                this.capturedPieces.push(pieceToCapture);
+            } else {
+                return 'It\'s not empty';
+            }
+        }
+        
+        if(!canCapture){
+            if (!pieceToMove.canMove(toPosition)) {
+                return 'Illegal Move';
+            }
+        }
 
         this.advanceTurn();
-        
+
         pieceToMove.setPiecePosition(toPosition);
         pieceToMove.setMoved();
         this.board[fromRank][fromFile] = EMPTY;

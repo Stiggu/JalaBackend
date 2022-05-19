@@ -51,3 +51,12 @@ test('Black moves Queen D8 to D7, Blocks', () => {
 
     expect(game.board.movePieceTo(team, from, to)).toBe('Piece has been moved');
 });
+
+test('White moves Bishop B5 to D7', () => {
+
+    const team: Color = 'White';
+    const from: Position = new Position('B',5);
+    const to: Position = new Position('D', 7)
+
+    expect(game.board.movePieceTo(team, from, to)).toBe('Piece has been moved');
+});
