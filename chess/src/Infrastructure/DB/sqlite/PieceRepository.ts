@@ -15,7 +15,8 @@ export default class pieceRepository implements IRepository {
     find(item: string): Promise<string[]> {
         throw new Error("Method not implemented.");
     }
-    findOne(id: string): Promise<string> {
+
+    findOne(id: number): Promise<string> {
         console.log('a');
         throw new Error("Method not implemented.");
     }

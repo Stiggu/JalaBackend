@@ -1,8 +1,4 @@
-﻿import {Color} from "../Entities/chess_types";
-import Piece from "../Entities/piece";
-import Position from "../Entities/position";
-import IGame from "../Entities/IGame";
-import Board from "../Entities/board";
+﻿import IGame from "../Entities/IGame";
 import BoardService from "./BoardService";
 
 export default interface IGameService extends IGame {
@@ -14,7 +10,7 @@ export default interface IGameService extends IGame {
     createBoard(): BoardService,
 
     
-    // getGameInformation(): object,
+    getGameInformation(): void,
     // move(color: Color, from: Position, to:Position): object,
     // createNewPlayer(name: string): object,
     // getPiece(pos: Position): Piece | null,

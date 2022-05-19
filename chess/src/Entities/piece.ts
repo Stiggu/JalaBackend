@@ -1,10 +1,24 @@
 import Position from "./position";
 import {File, Rank, Color, PieceKind} from "./chess_types";
+import {Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
+import Board from "./Models/board.model";
 
+@Entity()
 export default abstract class Piece {
+    
+    @PrimaryGeneratedColumn()
+    @OneToMany(() => Board, (pieces) => pieces.board)
+    id!: number;
+    
+    @Column()
+    turn: number = 0;
+
+    @Column()
+    isCaptured: boolean;
+    
     protected position: Position;
     private hasMoved: boolean;
-    private isCaptured: boolean;
+    
     
     constructor(public readonly name: PieceKind, private readonly color: Color, file: File, rank: Rank){
         this.position = new Position(file, rank);

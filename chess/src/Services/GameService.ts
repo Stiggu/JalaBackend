@@ -1,6 +1,5 @@
 ﻿import IGameService from "./IGameService";
-import {inject} from "inversify";
-import GameRepository from "../Infrastructure/DB/sqlite/GameRepository";
+import {inject, injectable} from "inversify";
 import {Color, GameOutcome, GameStatus} from "../Entities/chess_types";
 import Position from "../Entities/position";
 import IBoardStatus from "../Entities/IBoardStatus";
@@ -9,11 +8,15 @@ import Reporter from "./reporter";
 import BoardService from "./BoardService";
 import HandlerService from "./idHandlerService";
 import {MAX_PLAYERS} from "../Entities/chess_globals";
+import {IGameRepository} from "../Repository/Interfaces/IGameRepository";
+import DI from "./Inversion/depencencyInversionTypes";
+import container from "./Inversion/config"
+import getDecorators from "inversify-inject-decorators";
 
+const {lazyInject} = getDecorators(container);
+
+@injectable()
 export default class GameService implements IGameService {
-
-    @inject(GameRepository) private GameRep: GameRepository | any;
-
     id!: number
     board: BoardService;
     players: Player[] = [];
@@ -21,6 +24,8 @@ export default class GameService implements IGameService {
     started: boolean = false;
     handler: HandlerService = new HandlerService();
 
+    @lazyInject(DI.IGameRepository) private _GameRepository!: IGameRepository;
+    
     constructor() {
         this.gameOutcome = 'Game hasn\'t started yet';
         this.board = this.createBoard()
@@ -31,11 +36,9 @@ export default class GameService implements IGameService {
     }
 
     startGame(): IBoardStatus {
-        // Starts the game
         this.gameOutcome = 'Waiting for Players';
         this.board.resetBoard();
         this.id = this.handler.makeID();
-        // Report
         return this.getGameStatus('Game Has Been Started');
     }
 
@@ -71,24 +74,9 @@ export default class GameService implements IGameService {
         return this.getGameStatus('A Player has joined the game!');
     }
 
-
-    // getPiece(pos: Position): Piece | null {
-    //     return this.board.getPieceAt(this.board.board, pos);
-    // }
-    //
-    // getGameInformation(): IBoardStatus {
-    //     return this.getGameStatus('Current Board status');
-    // }
-    //
-    // move(color: Color, from: Position, to: Position): object {
-    //     return this.movePiece(color, from, to);
-    // }
-    //
-    // createNewPlayer(name: string): object {
-    //     return this.makePlayer(name);
-    // }
-    //
-    // start(): object {
-    //     return this.startGame();
-    // }
+    getGameInformation(): string {
+        console.log(this._GameRepository);
+        this._GameRepository.findOne(1);
+        return 'worked';
+    }
 }

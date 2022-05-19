@@ -1,4 +1,4 @@
-import {Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn} from "typeorm";
 import Board from "./board.model";
 import Player from "../player";
 import {GameOutcome} from "../chess_types";
@@ -12,9 +12,12 @@ export default class Game {
     @OneToOne(() => Board)
     @JoinColumn()
     public board!: Board;
-    
-    public players: Player[] = [];
+
+    @Column()
     private gameOutcome!: GameOutcome;
+
+
+    public players: Player[] = [];
     private started: boolean = false;
 
 }

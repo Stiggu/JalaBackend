@@ -19,6 +19,9 @@ import {
 import Calculator from "../Entities/calculator";
 
 export default class BoardService implements IBoard {
+    
+    
+    
     board!: BoardSquares;
     capturedPieces: Piece[] = [];
     currentTeamTurn!: Color;
@@ -163,6 +166,21 @@ export default class BoardService implements IBoard {
         } else if (this.currentTeamTurn === TEAMS.BLACK) {
             this.currentTeamTurn = TEAMS.WHITE as Color;
         }
+
+        for (let row = 0; row < this.board.length; row++) {
+            for (let column = 0; column < this.board[row].length; column++) {
+                if(this.board[row][column] === null){
+                    continue;
+                }
+                const currentPiece = this.board[row][column] as Piece;
+                currentPiece.turn = this.turn;
+            }
+        }
+    }
+    
+    updateKing(king: Piece){
+        const kingTeam = king.getColor() === TEAMS.WHITE ? WHITE_KING : BLACK_KING;
+        this.kings[kingTeam] = king;
     }
 
     movePieceTo(team: Color, fromPosition: Position, toPosition: Position): GameStatus {
@@ -191,6 +209,7 @@ export default class BoardService implements IBoard {
         const mockBoard: BoardSquares = this.copyMainBoard();
         mockBoard[fromRank][fromFile] = EMPTY;
         mockBoard[toRank][toFile] = pieceToMove;
+        
         const kingExposed: boolean = this.isKingOnCheck(mockBoard, fromPosition, toPosition);
         if (kingExposed) {
             return 'Illegal Move, The king is exposed!';
@@ -202,6 +221,7 @@ export default class BoardService implements IBoard {
             const pieceToCapture = this.getPieceAt(this.board, toPosition) as Piece;
             
             if(pieceToMove.canCapture(pieceToCapture)){
+                pieceToCapture.isCaptured = true;
                 canCapture = true;
                 this.capturedPieces.push(pieceToCapture);
             } else {
@@ -222,6 +242,10 @@ export default class BoardService implements IBoard {
         this.board[fromRank][fromFile] = EMPTY;
         this.board[toRank][toFile] = pieceToMove;
 
+        if(pieceToMove.name === PIECES.KING){
+            this.updateKing(pieceToMove);
+        }
+        
         return 'Piece has been moved';
     }
 }

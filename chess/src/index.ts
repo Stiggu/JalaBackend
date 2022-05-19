@@ -15,6 +15,10 @@ app.get('/api/v1/start', (req, res) => {
     res.send(game.startGame());
 });
 
+app.get('/api/v1/test', (req, res) => {
+    res.send(game.getGameInformation());
+});
+
 app.get('/api/v1/restart', (req, res) => {
     game = new GameService();
     res.send({status: 'Game has been restarted!'});

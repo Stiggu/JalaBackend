@@ -2,9 +2,14 @@ import { Container } from 'inversify';
 import IRepository from "../../Repository/Interfaces/IRepository";
 import pieceRepository from "../../Infrastructure/DB/sqlite/PieceRepository";
 import GameRepository from "../../Infrastructure/DB/sqlite/GameRepository";
+import BoardRepository from "../../Infrastructure/DB/sqlite/BoardRepository";
+import {IGameRepository} from "../../Repository/Interfaces/IGameRepository";
+import DI from "./depencencyInversionTypes";
 
-export const container = new Container();
+const container = new Container();
 
-// Bind to use DB from the outside
-container.bind<IRepository>(pieceRepository).to(pieceRepository);
-container.bind<IRepository>(GameRepository).to(GameRepository);
+container.bind<IRepository>(DI.IPieceRepository).to(pieceRepository);
+container.bind<IGameRepository>(DI.IGameRepository).to(GameRepository);
+container.bind<IRepository>(DI.IBoardRepository).to(BoardRepository);
+
+export default container;
