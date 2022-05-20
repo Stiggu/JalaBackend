@@ -1,4 +1,6 @@
-﻿export const fileMapper = {
+﻿import { File } from "./chess_types";
+
+export const fileMapper = {
     'A': 0,
     'B': 1,
     'C': 2,
@@ -9,7 +11,16 @@
     'H': 7
 }
 
-export const fileMapperReverse = {
+export const fileMapperReverse: {
+    0:File,
+    1:File,
+    2:File,
+    3:File,
+    4:File,
+    5:File,
+    6:File,
+    7:File
+} = {
     0:'A',
     1:'B',
     2:'C',

@@ -17,11 +17,11 @@ import {
     WHITE_KING
 } from "../Entities/chess_globals";
 import Calculator from "../Entities/calculator";
+import {fileHelper, fileMapperReverse} from "../Entities/fileMapper";
 
 export default class BoardService implements IBoard {
-    
-    
-    
+
+
     board!: BoardSquares;
     capturedPieces: Piece[] = [];
     currentTeamTurn!: Color;
@@ -99,22 +99,31 @@ export default class BoardService implements IBoard {
         this.kings.push(new King('King', 'Black', 'E', 8));
     }
 
-    // TODO Move to another service
+    getEnemyKings(board: BoardSquares): King[] {
+        const kings: King[] = [];
+        for (let row = 0; row < board.length; row++) {
+            for (let column = 0; column < board[row].length; column++) {
+                if (board[row][column] === EMPTY) {
+                    continue;
+                }
 
-    //
+                const piece = board[row][column] as King;
 
-    getEnemyKing(team: Color): King {
-        if (team === TEAMS.WHITE) {
-            return this.kings[BLACK_KING];
-        } else {
-            return this.kings[WHITE_KING];
+                if (piece.name === PIECES.KING) {
+                    if (piece.getColor() === TEAMS.WHITE) {
+                        kings[WHITE_KING] = piece;
+                    } else {
+                        kings[BLACK_KING] = piece;
+                    }
+                }
+            }
         }
+        return kings;
     }
 
     isPositionEmpty(board: BoardSquares, pos: Position): boolean {
         return this.getPieceAt(board, pos) == EMPTY;
     }
-
 
     isPathAvailable(board: BoardSquares, fromPosition: Position, toPosition: Position): boolean {
         const positionCalculator = new Calculator(fromPosition, toPosition);
@@ -130,7 +139,43 @@ export default class BoardService implements IBoard {
         return true;
     }
 
-    isKingOnCheck(board: BoardSquares, fromPosition: Position, toPosition: Position): boolean {
+    canKingMove(board: BoardSquares, kingType: number): boolean {
+        const king = this.getEnemyKings(board)[kingType];
+        const availablePositions = [
+            [0, 1],
+            [1, 1],
+            [1, 0],
+            [1, -1],
+            [0, -1],
+            [-1, -1],
+            [-1, 0],
+            [-1, 1]
+        ]
+        const X = 0;
+        const Y = 1;
+
+        for (const availablePosition of availablePositions) {
+            try {
+                const rankToGo = king.getPosition().getRank() + availablePosition[Y] as Rank;
+                const [fileToGoMapped] = Calculator.fileToMatrix(king.getPosition());
+                const fileToGo = fileMapperReverse[fileToGoMapped as fileHelper] as File;
+                const copyMainBoard: BoardSquares = this.copyMainBoard(king.getPosition(), new Position(fileToGo, rankToGo));
+                const kingsCheckStatus: boolean = this.kingsOnCheck(copyMainBoard, king.getPosition(), new Position(fileToGo, rankToGo))[kingType];
+                if (!kingsCheckStatus) {
+                    return false;
+                }
+            } catch (e) {
+                // console.log('Unavailable');
+                // continue;
+            }
+        }
+        return true;
+    }
+
+    findKingAttackers(board: BoardSquares, kingType: number): Piece[] {
+        const king: King = this.getEnemyKings(board)[kingType];
+        const attackers: Piece[] = [];
+
         for (let row = 0; row < board.length; row++) {
             for (let column = 0; column < board[row].length; column++) {
                 if (board[row][column] === EMPTY) {
@@ -138,24 +183,154 @@ export default class BoardService implements IBoard {
                 }
 
                 const piece = board[row][column] as Piece;
-                const enemyKing: King = this.getEnemyKing(piece.getColor())
-                
-                if (!piece.canMove(enemyKing.getPosition())) {
+                if (!piece.canCapture(king)) {
                     continue;
                 }
-
-                const kingExposed = this.isPathAvailable(board, piece.getPosition(), enemyKing.getPosition());
-
+                const kingExposed = this.isPathAvailable(board, piece.getPosition(), king.getPosition());
                 if (kingExposed) {
-                    return true;
+                    attackers.push(piece);
+                }
+            }
+        }
+
+        return attackers;
+    }
+
+    canAttackersBeCaptured(board: BoardSquares, attackers: Piece[]): boolean {
+        for (const attacker of attackers) {
+            for (let row = 0; row < board.length; row++) {
+                for (let column = 0; column < board[row].length; column++) {
+                    if (board[row][column] === EMPTY) {
+                        continue;
+                    }
+
+                    const piece = board[row][column] as Piece;
+                    if (piece.getColor() === attacker.getColor() || !piece.canCapture(attacker)) {
+                        continue;
+                    }
+
+                    if(this.turn === 4){
+                        console.log(piece);
+                    }
+                    if(piece.name !== PIECES.KNIGHT){
+                        const attackerExposed = this.isPathAvailable(board, piece.getPosition(), attacker.getPosition());
+                        if (attackerExposed) {
+                            if(piece.canCapture(attacker)){
+                                return true;
+                            }
+                        }
+                    } else {
+                        if(piece.canCapture(attacker)){
+                            return true;
+                        }
+                    }
                 }
             }
         }
         return false;
     }
 
-    copyMainBoard(): BoardSquares {
-        return this.board.map(arr => arr.slice(0));
+    findBlockSquares(board: BoardSquares, kingType: number) {
+        const king: King = this.getEnemyKings(board)[kingType];
+        const attackers = this.findKingAttackers(board, kingType);
+        const squares: Position[] = [];
+
+        for (const attacker of attackers) {
+            const positionCalculator = new Calculator(attacker.getPosition(), king.getPosition());
+            let preSquares = [];
+
+            for (let square = PATH_START_POSITION; square < Math.max(positionCalculator.distanceX, positionCalculator.distanceY); square++) {
+                const pieceInFrontX: File = Calculator.matrixToFile(positionCalculator.fromFile, positionCalculator.directionX, square);
+                const pieceInFrontY: Rank = attacker.getPosition().getRank() + (square * positionCalculator.directionY) as Rank;
+                const pos = new Position(pieceInFrontX, pieceInFrontY);
+                
+                preSquares.push(pos);
+                
+                if (!this.isPositionEmpty(board, pos)) {
+                    preSquares = [];
+                    break;
+                }
+            }
+
+            squares.push(...preSquares);
+        }
+
+        return squares;
+    }
+
+    canSquaresBeBlocked(board: BoardSquares, kingType: number, squares: Position[]) {
+        const king: King = this.getEnemyKings(board)[kingType];
+        for (let row = 0; row < board.length; row++) {
+            for (let column = 0; column < board[row].length; column++) {
+                if (board[row][column] === EMPTY) {
+                    continue;
+                }
+                const piece = board[row][column] as Piece;
+
+                if (king.getColor() !== piece.getColor()) {
+                    continue;
+                }
+                if(piece.name === PIECES.KING){
+                    continue;
+                }
+                
+                for (const square of squares) {
+                    if (!piece.canMove(square)) {
+                        continue;
+                    }
+
+
+
+                    const pieceBlocked = this.isPathAvailable(board, piece.getPosition(), square);
+
+                    if (pieceBlocked) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    kingsOnCheck(board: BoardSquares, fromPosition: Position, toPosition: Position): boolean[] {
+        let kingsOnCheck: boolean[] = [false, false];
+        for (let row = 0; row < board.length; row++) {
+            for (let column = 0; column < board[row].length; column++) {
+                if (board[row][column] === EMPTY) {
+                    continue;
+                }
+
+                const piece = board[row][column] as Piece;
+                const kings: King[] = this.getEnemyKings(board);
+                const enemyKing = kings[piece.getColor() == TEAMS.WHITE ? BLACK_KING : WHITE_KING];
+
+                if (!piece.canCapture(enemyKing)) {
+                    continue;
+                }
+
+                const kingExposed = this.isPathAvailable(board, piece.getPosition(), enemyKing.getPosition());
+                if (kingExposed) {
+                    if (enemyKing.getColor() === TEAMS.WHITE) {
+                        kingsOnCheck[WHITE_KING] = true;
+                    } else {
+                        kingsOnCheck[BLACK_KING] = true;
+                    }
+                }
+            }
+        }
+        return kingsOnCheck;
+    }
+
+    copyMainBoard(fromPosition: Position, toPosition: Position): BoardSquares {
+        const copiedBoard = this.board.map(arr => arr.slice(0));
+        const [fromFile, toFile] = Calculator.fileToMatrix(fromPosition, toPosition);
+        const [fromRank, toRank] = Calculator.rankToMatrix(fromPosition, toPosition);
+        const pieceToCopy = copiedBoard[fromRank][fromFile] as Piece;
+        const pieceToMove = Object.assign(Object.create(Object.getPrototypeOf(pieceToCopy)), pieceToCopy);
+        copiedBoard[fromRank][fromFile] = EMPTY;
+        copiedBoard[toRank][toFile] = pieceToMove;
+        pieceToMove.setPiecePosition(toPosition);
+        return copiedBoard
     }
 
     advanceTurn(): void {
@@ -169,7 +344,7 @@ export default class BoardService implements IBoard {
 
         for (let row = 0; row < this.board.length; row++) {
             for (let column = 0; column < this.board[row].length; column++) {
-                if(this.board[row][column] === null){
+                if (this.board[row][column] === null) {
                     continue;
                 }
                 const currentPiece = this.board[row][column] as Piece;
@@ -177,8 +352,8 @@ export default class BoardService implements IBoard {
             }
         }
     }
-    
-    updateKing(king: Piece){
+
+    updateKing(king: Piece) {
         const kingTeam = king.getColor() === TEAMS.WHITE ? WHITE_KING : BLACK_KING;
         this.kings[kingTeam] = king;
     }
@@ -206,21 +381,15 @@ export default class BoardService implements IBoard {
             }
         }
 
-        const mockBoard: BoardSquares = this.copyMainBoard();
-        mockBoard[fromRank][fromFile] = EMPTY;
-        mockBoard[toRank][toFile] = pieceToMove;
-        
-        const kingExposed: boolean = this.isKingOnCheck(mockBoard, fromPosition, toPosition);
-        if (kingExposed) {
-            return 'Illegal Move, The king is exposed!';
-        }
-        
+        const copyMainBoard: BoardSquares = this.copyMainBoard(fromPosition, toPosition);
+        const kingsCheckStatus: boolean[] = this.kingsOnCheck(copyMainBoard, fromPosition, toPosition);
+
         let canCapture = false;
         if (!this.isPositionEmpty(this.board, toPosition)) {
-            
+
             const pieceToCapture = this.getPieceAt(this.board, toPosition) as Piece;
-            
-            if(pieceToMove.canCapture(pieceToCapture)){
+
+            if (pieceToMove.canCapture(pieceToCapture)) {
                 pieceToCapture.isCaptured = true;
                 canCapture = true;
                 this.capturedPieces.push(pieceToCapture);
@@ -228,10 +397,36 @@ export default class BoardService implements IBoard {
                 return 'It\'s not empty';
             }
         }
-        
-        if(!canCapture){
+
+        if (this.currentTeamTurn === TEAMS.WHITE && kingsCheckStatus[WHITE_KING]) {
+            return 'Illegal Move, The white king is exposed!';
+        } else if (this.currentTeamTurn === TEAMS.BLACK && kingsCheckStatus[BLACK_KING]) {
+            return 'Illegal Move, The black king is exposed!';
+        }
+
+        if (!canCapture) {
             if (!pieceToMove.canMove(toPosition)) {
                 return 'Illegal Move';
+            }
+        }
+
+        if (this.currentTeamTurn === TEAMS.BLACK && kingsCheckStatus[WHITE_KING]) {
+            const canKingMove = this.canKingMove(copyMainBoard, WHITE_KING);
+            const attackers = this.findKingAttackers(copyMainBoard, WHITE_KING);
+            const canAttackersBeCaptured = this.canAttackersBeCaptured(copyMainBoard, attackers);
+            const squaresToBeBlocked = this.findBlockSquares(copyMainBoard, WHITE_KING);
+            const canSquaresBeBlocked = this.canSquaresBeBlocked(copyMainBoard, WHITE_KING, squaresToBeBlocked);
+            if (!canKingMove && !canAttackersBeCaptured && !canSquaresBeBlocked) {
+                return 'White has lost';
+            }
+        } else if (this.currentTeamTurn === TEAMS.WHITE && kingsCheckStatus[BLACK_KING]) {
+            const canKingMove = this.canKingMove(copyMainBoard, BLACK_KING);
+            const attackers = this.findKingAttackers(copyMainBoard, BLACK_KING);
+            const canAttackersBeCaptured = this.canAttackersBeCaptured(copyMainBoard, attackers);
+            const squaresToBeBlocked = this.findBlockSquares(copyMainBoard, BLACK_KING);
+            const canSquaresBeBlocked = this.canSquaresBeBlocked(copyMainBoard, BLACK_KING, squaresToBeBlocked);
+            if (!canKingMove && !canAttackersBeCaptured && !canSquaresBeBlocked) {
+                return 'Black has lost';
             }
         }
 
@@ -242,10 +437,16 @@ export default class BoardService implements IBoard {
         this.board[fromRank][fromFile] = EMPTY;
         this.board[toRank][toFile] = pieceToMove;
 
-        if(pieceToMove.name === PIECES.KING){
+        if (pieceToMove.name === PIECES.KING) {
             this.updateKing(pieceToMove);
         }
-        
+
+        if (kingsCheckStatus[WHITE_KING]) {
+            return 'White is on check';
+        } else if (kingsCheckStatus[BLACK_KING]) {
+            return 'Black is on check';
+        }
+
         return 'Piece has been moved';
     }
 }

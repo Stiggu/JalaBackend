@@ -6,5 +6,5 @@ export type Color = 'Black' | 'White';
 export type PieceKind = 'King' | 'Queen' | 'Rook' | 'Bishop' | 'Knight' | 'Pawn';
 export type GameState = 'White\'s Turn' | 'Black\'s Turn';
 export type GameOutcome = 'Draw' | 'Black Wins' | 'White Wins' | 'Playing' | 'Waiting for Players' | 'Game hasn\'t started yet';
-export type GameStatus = 'Spot it empty' | 'Illegal Move, The king is exposed!' | 'Illegal Move' | 'It\'s not empty' |'There is something in the way' | 'Incorrect piece color' | 'Current Board status' | 'Piece has been moved' | 'Piece didn\'t move' | 'Game Has Been Started' | 'Game is not live yet' | 'Invalid move' | 'Game is full!' | 'A Player has joined the game!';
+export type GameStatus = 'Illegal Move, The black king is exposed!' | 'Illegal Move, The white king is exposed!' | 'White is on check' | 'Black is on check' | 'White has lost' | 'Black has lost' | 'Spot it empty' | 'Illegal Move, The king is exposed!' | 'Illegal Move' | 'It\'s not empty' |'There is something in the way' | 'Incorrect piece color' | 'Current Board status' | 'Piece has been moved' | 'Piece didn\'t move' | 'Game Has Been Started' | 'Game is not live yet' | 'Invalid move' | 'Game is full!' | 'A Player has joined the game!';
 export type BoardSquares = (null[] | Piece[])[];

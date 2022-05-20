@@ -16,6 +16,9 @@ export default class King extends Piece {
     }
 
     canCapture(piece: Piece): boolean {
+        if(this.getColor() === piece.getColor()){
+            return false;
+        }
         return this.canMove(piece.getPosition());
     }
 }

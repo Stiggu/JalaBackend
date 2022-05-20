@@ -2,61 +2,116 @@
 import {Color} from "../../src/Entities/chess_types";
 import Position from "../../src/Entities/position";
 
-const game = new GameService();
-game.startGame();
-game.makePlayer('A');
-game.makePlayer('B');
+let game = new GameService();
 
-test('White moves Pawn E2 to E3', () => {
 
-    const team: Color = 'White';
-    const from: Position = new Position('E',2);
-    const to: Position = new Position('E', 3)
+beforeEach(() => {
+    game = new GameService();
+    game.startGame();
+    game.makePlayer('A');
+    game.makePlayer('B');
+})
+
+test('Check + Queen block', () => {
+
+    let team: Color = 'White';
+    let from: Position = new Position('E', 2);
+    let to: Position = new Position('E', 3);
+    expect(game.board.movePieceTo(team, from, to)).toBe('Piece has been moved');
+
+    team = 'Black';
+    from = new Position('D', 7);
+    to = new Position('D', 6)
+    expect(game.board.movePieceTo(team, from, to)).toBe('Piece has been moved');
+
+    team = 'White';
+    from = new Position('F', 1);
+    to = new Position('B', 5)
+    expect(game.board.movePieceTo(team, from, to)).toBe('Black is on check');
+
+    team = 'Black';
+    from = new Position('A', 7);
+    to = new Position('A', 6);
+    expect(game.board.movePieceTo(team, from, to)).toBe('Illegal Move, The black king is exposed!');
+
+    team = 'Black';
+    from = new Position('D', 8);
+    to = new Position('D', 7)
+    expect(game.board.movePieceTo(team, from, to)).toBe('Piece has been moved');
+
+    team = 'White';
+    from = new Position('B', 5);
+    to = new Position('D', 7)
+    expect(game.board.movePieceTo(team, from, to)).toBe('Black is on check');
+
+    team = 'Black';
+    from = new Position('E', 8);
+    to = new Position('D', 8)
+    expect(game.board.movePieceTo(team, from, to)).toBe('Piece has been moved');
+});
+
+test('Bknight eats pawn', () => {
+
+    let team: Color = 'White';
+    let from: Position = new Position('E', 2);
+    let to: Position = new Position('E', 3)
+
+    expect(game.board.movePieceTo(team, from, to)).toBe('Piece has been moved');
+
+    team = 'Black';
+    from = new Position('G', 8);
+    to = new Position('F', 6)
+
+    expect(game.board.movePieceTo(team, from, to)).toBe('Piece has been moved');
+
+    team = 'White';
+    from = new Position('G', 2);
+    to = new Position('G', 3);
+
+    expect(game.board.movePieceTo(team, from, to)).toBe('Piece has been moved');
+
+    team = 'Black';
+    from = new Position('F', 6);
+    to = new Position('E', 4);
+
+    expect(game.board.movePieceTo(team, from, to)).toBe('Piece has been moved');
+
+    team = 'White';
+    from = new Position('G', 1);
+    to = new Position('F', 3);
+
+    expect(game.board.movePieceTo(team, from, to)).toBe('Piece has been moved');
+
+    team = 'Black';
+    from = new Position('E', 4);
+    to = new Position('G', 3);
 
     expect(game.board.movePieceTo(team, from, to)).toBe('Piece has been moved');
 });
 
-test('Black moves Pawn D7 to D6', () => {
+test('Fool\'s Mate', () => {
 
-    const team: Color = 'Black';
-    const from: Position = new Position('D',7);
-    const to: Position = new Position('D', 6)
-
-    expect(game.board.movePieceTo(team, from, to)).toBe('Piece has been moved');
-});
-
-test('White moves Bishop F1 to B5', () => {
-
-    const team: Color = 'White';
-    const from: Position = new Position('F',1);
-    const to: Position = new Position('B', 5)
+    let team: Color = 'White';
+    let from: Position = new Position('F', 2);
+    let to: Position = new Position('F', 3)
 
     expect(game.board.movePieceTo(team, from, to)).toBe('Piece has been moved');
-});
 
-test('Black moves Pawn A7 to A6', () => {
-
-    const team: Color = 'Black';
-    const from: Position = new Position('A',7);
-    const to: Position = new Position('A', 6)
-
-    expect(game.board.movePieceTo(team, from, to)).toBe('Illegal Move, The king is exposed!');
-});
-
-test('Black moves Queen D8 to D7, Blocks', () => {
-
-    const team: Color = 'Black';
-    const from: Position = new Position('D',8);
-    const to: Position = new Position('D', 7)
+    team = 'Black';
+    from = new Position('E', 7);
+    to = new Position('E', 6)
 
     expect(game.board.movePieceTo(team, from, to)).toBe('Piece has been moved');
-});
 
-test('White moves Bishop B5 to D7', () => {
-
-    const team: Color = 'White';
-    const from: Position = new Position('B',5);
-    const to: Position = new Position('D', 7)
+    team = 'White';
+    from = new Position('G', 2);
+    to = new Position('G', 4);
 
     expect(game.board.movePieceTo(team, from, to)).toBe('Piece has been moved');
+
+    team = 'Black';
+    from = new Position('D', 8);
+    to = new Position('H', 4);
+
+    expect(game.board.movePieceTo(team, from, to)).toBe('White has lost');
 });

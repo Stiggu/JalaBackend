@@ -8,11 +8,11 @@ export default class Pawn extends Piece{
         const distanceY = position.getRank() - this.position.getRank();
         
         if ( distanceX !== 0) return false;
-        
+
         if(this.getColor() == TEAMS.WHITE){
-            return distanceY === 1;
+            return this.hasMoved ? distanceY === 1: distanceY <= 2 && distanceY > 0;
         } else {
-            return distanceY === -1;
+            return this.hasMoved ? distanceY === -1 : distanceY >= -2 && distanceY < 0;
         }
     }
 

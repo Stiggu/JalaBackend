@@ -15,7 +15,7 @@ export default interface IBoard {
     getPieceAt(board:BoardSquares, pos: Position): Piece | null,
     resetBoard(): void,
     isPathAvailable(board:BoardSquares, from: Position, to: Position): boolean,
-    isKingOnCheck(board: BoardSquares, from: Position, to: Position, turn: Color): boolean,
+    kingsOnCheck(board: BoardSquares, fromPosition: Position, toPosition: Position): boolean[],
     movePieceTo(team: Color, fromPosition: Position, toPosition: Position): GameStatus,
     
 }

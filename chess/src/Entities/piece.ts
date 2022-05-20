@@ -17,7 +17,7 @@ export default abstract class Piece {
     isCaptured: boolean;
     
     protected position: Position;
-    private hasMoved: boolean;
+    protected hasMoved: boolean;
     
     
     constructor(public readonly name: PieceKind, private readonly color: Color, file: File, rank: Rank){
