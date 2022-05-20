@@ -9,12 +9,15 @@ import Queen from "../Entities/queen";
 import Pawn from "../Entities/pawn";
 import IBoard from "../Entities/IBoard";
 import {
+    availablePositions,
     BLACK_KING,
-    EMPTY, FIRST_TURN,
+    EMPTY,
+    FIRST_TURN,
     PATH_START_POSITION,
     PIECES,
     TEAMS,
-    WHITE_KING
+    WHITE_KING,
+    Y
 } from "../Entities/chess_globals";
 import Calculator from "../Entities/calculator";
 import {fileHelper, fileMapperReverse} from "../Entities/fileMapper";
@@ -141,35 +144,27 @@ export default class BoardService implements IBoard {
 
     canKingMove(board: BoardSquares, kingType: number): boolean {
         const king = this.getEnemyKings(board)[kingType];
-        const availablePositions = [
-            [0, 1],
-            [1, 1],
-            [1, 0],
-            [1, -1],
-            [0, -1],
-            [-1, -1],
-            [-1, 0],
-            [-1, 1]
-        ]
-        const X = 0;
-        const Y = 1;
+        
 
         for (const availablePosition of availablePositions) {
             try {
                 const rankToGo = king.getPosition().getRank() + availablePosition[Y] as Rank;
                 const [fileToGoMapped] = Calculator.fileToMatrix(king.getPosition());
                 const fileToGo = fileMapperReverse[fileToGoMapped as fileHelper] as File;
-                const copyMainBoard: BoardSquares = this.copyMainBoard(king.getPosition(), new Position(fileToGo, rankToGo));
+                if(this.getPieceAt(board, new Position(fileToGo, rankToGo)) !== EMPTY){
+                    continue;
+                }
+                const copyMainBoard: BoardSquares = this.copyMainBoard(board, king.getPosition(), new Position(fileToGo, rankToGo));
                 const kingsCheckStatus: boolean = this.kingsOnCheck(copyMainBoard, king.getPosition(), new Position(fileToGo, rankToGo))[kingType];
-                if (!kingsCheckStatus) {
-                    return false;
+                if (kingsCheckStatus) {
+                    return true;
                 }
             } catch (e) {
                 // console.log('Unavailable');
                 // continue;
             }
         }
-        return true;
+        return false;
     }
 
     findKingAttackers(board: BoardSquares, kingType: number): Piece[] {
@@ -209,19 +204,19 @@ export default class BoardService implements IBoard {
                         continue;
                     }
 
-                    if(this.turn === 4){
-                        console.log(piece);
-                    }
-                    if(piece.name !== PIECES.KNIGHT){
+                    if (piece.canCapture(attacker)) {
                         const attackerExposed = this.isPathAvailable(board, piece.getPosition(), attacker.getPosition());
-                        if (attackerExposed) {
-                            if(piece.canCapture(attacker)){
+                        const captureBoard: BoardSquares = this.copyMainBoard(board, piece.getPosition(), attacker.getPosition());
+                        const kingsCheckStatus: boolean[] = this.kingsOnCheck(captureBoard, piece.getPosition(), attacker.getPosition());
+                        const kingColor = attacker.getColor() === TEAMS.WHITE ? BLACK_KING : WHITE_KING;
+                        if (piece.name !== PIECES.KNIGHT && attackerExposed) {
+                            if(!kingsCheckStatus[kingColor]){
                                 return true;
                             }
-                        }
-                    } else {
-                        if(piece.canCapture(attacker)){
-                            return true;
+                        } else if(piece.name === PIECES.KNIGHT){
+                            if(!kingsCheckStatus[kingColor]){
+                                return true;
+                            }
                         }
                     }
                 }
@@ -236,6 +231,9 @@ export default class BoardService implements IBoard {
         const squares: Position[] = [];
 
         for (const attacker of attackers) {
+            if (attacker.name === PIECES.KNIGHT) {
+                continue;
+            }
             const positionCalculator = new Calculator(attacker.getPosition(), king.getPosition());
             let preSquares = [];
 
@@ -243,18 +241,16 @@ export default class BoardService implements IBoard {
                 const pieceInFrontX: File = Calculator.matrixToFile(positionCalculator.fromFile, positionCalculator.directionX, square);
                 const pieceInFrontY: Rank = attacker.getPosition().getRank() + (square * positionCalculator.directionY) as Rank;
                 const pos = new Position(pieceInFrontX, pieceInFrontY);
-                
+
                 preSquares.push(pos);
-                
+
                 if (!this.isPositionEmpty(board, pos)) {
                     preSquares = [];
                     break;
                 }
             }
-
             squares.push(...preSquares);
         }
-
         return squares;
     }
 
@@ -270,16 +266,14 @@ export default class BoardService implements IBoard {
                 if (king.getColor() !== piece.getColor()) {
                     continue;
                 }
-                if(piece.name === PIECES.KING){
+                if (piece.name === PIECES.KING) {
                     continue;
                 }
-                
+
                 for (const square of squares) {
                     if (!piece.canMove(square)) {
                         continue;
                     }
-
-
 
                     const pieceBlocked = this.isPathAvailable(board, piece.getPosition(), square);
 
@@ -308,6 +302,14 @@ export default class BoardService implements IBoard {
                     continue;
                 }
 
+                if(piece.name === PIECES.KNIGHT){
+                    if (enemyKing.getColor() === TEAMS.WHITE) {
+                        kingsOnCheck[WHITE_KING] = true;
+                    } else {
+                        kingsOnCheck[BLACK_KING] = true;
+                    }
+                }
+                
                 const kingExposed = this.isPathAvailable(board, piece.getPosition(), enemyKing.getPosition());
                 if (kingExposed) {
                     if (enemyKing.getColor() === TEAMS.WHITE) {
@@ -321,8 +323,8 @@ export default class BoardService implements IBoard {
         return kingsOnCheck;
     }
 
-    copyMainBoard(fromPosition: Position, toPosition: Position): BoardSquares {
-        const copiedBoard = this.board.map(arr => arr.slice(0));
+    copyMainBoard(board:BoardSquares, fromPosition: Position, toPosition: Position): BoardSquares {
+        const copiedBoard = board.map(arr => arr.slice(0));
         const [fromFile, toFile] = Calculator.fileToMatrix(fromPosition, toPosition);
         const [fromRank, toRank] = Calculator.rankToMatrix(fromPosition, toPosition);
         const pieceToCopy = copiedBoard[fromRank][fromFile] as Piece;
@@ -381,9 +383,9 @@ export default class BoardService implements IBoard {
             }
         }
 
-        const copyMainBoard: BoardSquares = this.copyMainBoard(fromPosition, toPosition);
+        const copyMainBoard: BoardSquares = this.copyMainBoard(this.board, fromPosition, toPosition);
         const kingsCheckStatus: boolean[] = this.kingsOnCheck(copyMainBoard, fromPosition, toPosition);
-
+        
         let canCapture = false;
         if (!this.isPositionEmpty(this.board, toPosition)) {
 
@@ -409,27 +411,25 @@ export default class BoardService implements IBoard {
                 return 'Illegal Move';
             }
         }
-
-        if (this.currentTeamTurn === TEAMS.BLACK && kingsCheckStatus[WHITE_KING]) {
-            const canKingMove = this.canKingMove(copyMainBoard, WHITE_KING);
-            const attackers = this.findKingAttackers(copyMainBoard, WHITE_KING);
+        
+        const kingColor = this.currentTeamTurn === TEAMS.BLACK ? WHITE_KING : BLACK_KING;
+        const kingCheckStatus = kingsCheckStatus[kingColor];
+        
+        if(kingCheckStatus){
+            const canKingMove = this.canKingMove(copyMainBoard, kingColor);
+            const attackers = this.findKingAttackers(copyMainBoard, kingColor);
             const canAttackersBeCaptured = this.canAttackersBeCaptured(copyMainBoard, attackers);
-            const squaresToBeBlocked = this.findBlockSquares(copyMainBoard, WHITE_KING);
-            const canSquaresBeBlocked = this.canSquaresBeBlocked(copyMainBoard, WHITE_KING, squaresToBeBlocked);
+            const squaresToBeBlocked = this.findBlockSquares(copyMainBoard, kingColor);
+            const canSquaresBeBlocked = this.canSquaresBeBlocked(copyMainBoard, kingColor, squaresToBeBlocked);
             if (!canKingMove && !canAttackersBeCaptured && !canSquaresBeBlocked) {
-                return 'White has lost';
-            }
-        } else if (this.currentTeamTurn === TEAMS.WHITE && kingsCheckStatus[BLACK_KING]) {
-            const canKingMove = this.canKingMove(copyMainBoard, BLACK_KING);
-            const attackers = this.findKingAttackers(copyMainBoard, BLACK_KING);
-            const canAttackersBeCaptured = this.canAttackersBeCaptured(copyMainBoard, attackers);
-            const squaresToBeBlocked = this.findBlockSquares(copyMainBoard, BLACK_KING);
-            const canSquaresBeBlocked = this.canSquaresBeBlocked(copyMainBoard, BLACK_KING, squaresToBeBlocked);
-            if (!canKingMove && !canAttackersBeCaptured && !canSquaresBeBlocked) {
-                return 'Black has lost';
+                if(kingColor === WHITE_KING){
+                    return 'White has lost';
+                } else {
+                    return 'Black has lost';
+                }
             }
         }
-
+        
         this.advanceTurn();
 
         pieceToMove.setPiecePosition(toPosition);

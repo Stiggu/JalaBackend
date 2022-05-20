@@ -115,3 +115,61 @@ test('Fool\'s Mate', () => {
 
     expect(game.board.movePieceTo(team, from, to)).toBe('White has lost');
 });
+
+test('Smothered Mate', () => {
+
+    let team: Color = 'White';
+    let from: Position = new Position('E', 2);
+    let to: Position = new Position('E', 4)
+    expect(game.board.movePieceTo(team, from, to)).toBe('Piece has been moved');
+
+    team = 'Black';
+    from = new Position('C', 7);
+    to = new Position('C', 6)
+    expect(game.board.movePieceTo(team, from, to)).toBe('Piece has been moved');
+
+    team = 'White';
+    from = new Position('D', 2);
+    to = new Position('D', 4);
+    expect(game.board.movePieceTo(team, from, to)).toBe('Piece has been moved');
+
+    team = 'Black';
+    from = new Position('D', 7);
+    to = new Position('D', 5);
+    expect(game.board.movePieceTo(team, from, to)).toBe('Piece has been moved');
+
+    team = 'White';
+    from = new Position('B', 1);
+    to = new Position('C', 3);
+    expect(game.board.movePieceTo(team, from, to)).toBe('Piece has been moved');
+
+    team = 'Black';
+    from = new Position('D', 5);
+    to = new Position('E', 4);
+    expect(game.board.movePieceTo(team, from, to)).toBe('Piece has been moved');
+
+    team = 'White';
+    from = new Position('C', 3);
+    to = new Position('E', 4);
+    expect(game.board.movePieceTo(team, from, to)).toBe('Piece has been moved');
+
+    team = 'Black';
+    from = new Position('B', 8);
+    to = new Position('D', 7);
+    expect(game.board.movePieceTo(team, from, to)).toBe('Piece has been moved');
+
+    team = 'White';
+    from = new Position('D', 1);
+    to = new Position('E', 2);
+    expect(game.board.movePieceTo(team, from, to)).toBe('Piece has been moved');
+
+    team = 'Black';
+    from = new Position('G', 8);
+    to = new Position('F', 6);
+    expect(game.board.movePieceTo(team, from, to)).toBe('Piece has been moved');
+
+    team = 'White';
+    from = new Position('E', 4);
+    to = new Position('D', 6);
+    expect(game.board.movePieceTo(team, from, to)).toBe('Black has lost');
+});

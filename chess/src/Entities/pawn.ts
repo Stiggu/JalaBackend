@@ -25,9 +25,9 @@ export default class Pawn extends Piece{
         const distanceY = piece.getPosition().getRank() - this.position.getRank();
 
         if(this.getColor() == TEAMS.WHITE){
-            return distanceX === 1 && distanceY === 1;
+            return distanceX === 1 && distanceY === 1 || distanceX === -1 && distanceY === 1;
         } else {
-            return distanceX === -1 && distanceY === -1;
+            return distanceX === 1 && distanceY === -1 || distanceX === -1 && distanceY === -1;
         }
     }
 }
