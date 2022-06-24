@@ -8,7 +8,7 @@
 - ✅ Piece Logic
 - ✅ Be able to capture pieces
 - ✅ Two pieces can't occupy the same spot
-- ❌ Checkmate
+- ✅ Checkmate
 - ❌ REFACTOR OH GOD
 - ❌ Use a database (Inversion is done and entities were being done)
 
