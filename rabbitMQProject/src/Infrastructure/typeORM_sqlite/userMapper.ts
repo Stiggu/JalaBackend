@@ -21,6 +21,7 @@ export class UserMapper {
         return new User({
             name: data.name,
             alias: data.alias,
+            attendance: 0,
         })
     }
     

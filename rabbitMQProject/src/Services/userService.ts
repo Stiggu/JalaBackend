@@ -13,6 +13,7 @@ export class UserService {
         const data = {
             name: request.name,
             alias: request.alias,
+            attendance: request.attendance,
         }
         const user = new User(data);
         return await this.userRepository.createUser(user);
@@ -37,7 +38,6 @@ export class UserService {
     }
     
     async getAllUsers(name?: string, alias?: string){
-        console.log(name, alias);
         return await this.userRepository.findAllUsers(name, alias);
     }
     

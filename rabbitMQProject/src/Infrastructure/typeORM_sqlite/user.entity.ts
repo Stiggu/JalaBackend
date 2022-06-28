@@ -11,6 +11,6 @@ export class UserEntity {
     @Column()
     alias!: string
     
-    @Column({default: 0})
-    attendance?: number;
+    @Column()
+    attendance!: number;
 }

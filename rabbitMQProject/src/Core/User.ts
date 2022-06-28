@@ -2,14 +2,14 @@
     id?: string,
     name: string,
     alias: string,
-    attendance?: number,
+    attendance: number,
 }
 
 export class User implements UserData{
     id!: string;
     name: string;
     alias: string;
-    attendance?: number;
+    attendance: number;
     
     constructor(data: UserData) {
         if(data.id){
@@ -18,13 +18,10 @@ export class User implements UserData{
         
         this.name = data.name;
         this.alias = data.alias;
+        this.attendance = data.attendance;
         
-        if(this.attendance){
-            this.attendance = data.attendance;
-        }
     }
     
     updateUser(data: UserData){
-        
     }
 }
