@@ -25,10 +25,10 @@ export class ResponseHandler {
             })
     }
     static genericResponse<T>(@response() res: express.Response, status: HttpStatusCode, message: string){
-        res.status(HttpStatusCode.INTERNAL_ERROR)
+        res.status(status)
             .json({
-                status: HttpStatusCode.INTERNAL_ERROR,
-                message: "Internal server error, send help",
+                status: status,
+                message: message,
             })
     }
     
