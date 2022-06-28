@@ -1,5 +1,14 @@
 ﻿import * as express from "express";
-import {controller, httpDelete, httpGet, httpPost, request, requestParam, response} from "inversify-express-utils";
+import {
+    controller,
+    httpDelete,
+    httpGet,
+    httpPost,
+    queryParam,
+    request,
+    requestParam,
+    response
+} from "inversify-express-utils";
 import {UserTypes} from "../Services/types";
 import {UserService} from "../Services/userService";
 import {inject} from "inversify";
@@ -13,8 +22,11 @@ export class userController {
     }
 
     @httpGet("/")
-    private async getUserList(@request() req: express.Request, @response() res: express.Response){
-        const userList = await this.userService.getAllUsers();
+    private async getUserList(@queryParam("name") name: string, 
+                              @queryParam("alias") alias: string, 
+                              @request() req: express.Request, 
+                              @response() res: express.Response){
+        const userList = await this.userService.getAllUsers(name, alias);
         return ResponseHandler.success(res, userList);
     }
 
@@ -23,7 +35,6 @@ export class userController {
         const data = {
             name: req.body.name,
             alias: req.body.alias,
-            
         }
         const mappedUser = UserMapper.requestToDomain(data);
         const user = await this.userService.createUser(mappedUser);
@@ -39,6 +50,6 @@ export class userController {
     @httpDelete('/:id')
     private async deleteUser(@requestParam("id") id: string, @request() req: express.Request, @response() res: express.Response) {
         await this.userService.deleteUser(id);
-        return ResponseHandler.delete(res, `User by the ID: ${id} has been deleted!`);
+        return ResponseHandler.deleted(res, `User by the ID: ${id} has been deleted!`);
     }
 }

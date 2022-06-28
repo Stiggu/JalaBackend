@@ -17,7 +17,7 @@ export class ResponseHandler {
             data: data,
         })
     }
-    static delete<T>(@response() res: express.Response, message: string){
+    static deleted<T>(@response() res: express.Response, message: string){
         res.status(HttpStatusCode.NO_CONTENT)
             .json({
                 status: HttpStatusCode.NO_CONTENT,

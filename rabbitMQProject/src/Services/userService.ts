@@ -36,8 +36,9 @@ export class UserService {
         return user;
     }
     
-    async getAllUsers(){
-        return await this.userRepository.findAllUsers();
+    async getAllUsers(name?: string, alias?: string){
+        console.log(name, alias);
+        return await this.userRepository.findAllUsers(name, alias);
     }
     
     async deleteUser(id: string){

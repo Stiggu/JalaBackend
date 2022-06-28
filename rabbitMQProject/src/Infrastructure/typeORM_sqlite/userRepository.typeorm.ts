@@ -14,8 +14,11 @@ export class UserRepositoryTypeorm implements UserRepository {
     constructor() {
     }
     
-    async findAllUsers(): Promise<User[]> {
-        const users = await this.repo.find();
+    async findAllUsers(name?:string, alias?:string): Promise<User[]> {
+        const users = await this.repo.findBy({
+            name: name,
+            alias: alias,
+        });
         return users.map(user => UserMapper.mapToCore(user));
     }
     
