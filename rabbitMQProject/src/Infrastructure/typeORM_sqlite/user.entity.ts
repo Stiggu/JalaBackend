@@ -2,9 +2,15 @@
 
 @Entity()
 export class UserEntity {
-    @PrimaryGeneratedColumn()
-    id!: number;
-    
+    @PrimaryGeneratedColumn("uuid")
+    id!: string;
+
     @Column()
     name!: string
+
+    @Column()
+    alias!: string
+    
+    @Column({default: 0})
+    attendance?: number;
 }

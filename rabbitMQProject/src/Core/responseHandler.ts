@@ -1,0 +1,35 @@
+﻿import express from "express";
+import {response} from "inversify-express-utils";
+import {HttpStatusCode} from "./types";
+
+export class ResponseHandler {
+    static success<T>(@response() res: express.Response, data: T){
+        res.status(HttpStatusCode.SUCCESS)
+            .json({
+            status: HttpStatusCode.SUCCESS,
+                data: data,
+        });
+    }
+    static created<T>(@response() res: express.Response, data: T) {
+        res.status(HttpStatusCode.CREATED)
+            .json({
+            status: HttpStatusCode.CREATED,
+            data: data,
+        })
+    }
+    static delete<T>(@response() res: express.Response, message: string){
+        res.status(HttpStatusCode.NO_CONTENT)
+            .json({
+                status: HttpStatusCode.NO_CONTENT,
+                message: message,
+            })
+    }
+    static genericResponse<T>(@response() res: express.Response, status: HttpStatusCode, message: string){
+        res.status(HttpStatusCode.INTERNAL_ERROR)
+            .json({
+                status: HttpStatusCode.INTERNAL_ERROR,
+                message: "Internal server error, send help",
+            })
+    }
+    
+}

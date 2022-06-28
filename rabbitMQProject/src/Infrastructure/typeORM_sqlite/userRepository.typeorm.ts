@@ -5,27 +5,48 @@ import {UserEntity} from "./user.entity";
 import {RelationalDataSource} from "./dataSource";
 import {User} from "../../Core/User";
 import {UserMapper} from "./userMapper";
+import {ValueNotFound} from "../../Core/exceptions/valueNotFound";
 
 @injectable()
 export class UserRepositoryTypeorm implements UserRepository {
-    private readonly repo: Repository<UserEntity>;
+    private readonly repo: Repository<UserEntity> = RelationalDataSource.getRepository(UserEntity);
     
     constructor() {
-        this.repo = RelationalDataSource.getRepository(UserEntity);
     }
     
-    async findUser(id: number): Promise<User | undefined> {
+    async findAllUsers(): Promise<User[]> {
+        const users = await this.repo.find();
+        return users.map(user => UserMapper.mapToCore(user));
+    }
+    
+    async findUser(id: string): Promise<User | undefined> {
         const user = await this.repo.findOne({
             where: {
                 id: id,
             }
         });
+        
         return user ? UserMapper.mapToCore(user) : undefined;
     }
 
-    createUser(user: User): Promise<User> {
+    async createUser(user: User): Promise<User> {
         const mappedUser = UserMapper.mapToEntity(user);
-        return this.repo.save(mappedUser);
+        const userEntity = await this.repo.save(mappedUser);
+        return UserMapper.mapToCore(userEntity);
+    }
+
+    async deleteUser(id: string): Promise<void> {
+        const user = await this.repo.findOne({
+            where:{
+                id: id,
+            }
+        })
+        
+        if(!user){
+            throw new ValueNotFound(`User with ID: ${id} does not exist!`);
+        }
+        
+        await this.repo.remove(user);
     }
     
 }
