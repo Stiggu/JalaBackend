@@ -1,7 +1,7 @@
 ﻿import {inject, injectable} from "inversify";
 import {UserTypes} from "./types";
 import UserRepository from "../Repository/userRepository";
-import {User} from "../Core/User";
+import {PrimitiveUserData, User} from "../Core/User";
 import {UpdateUserDto} from "./dto/updateUser.dto";
 import {ValueNotFound} from "../Core/exceptions/valueNotFound";
 
@@ -9,11 +9,11 @@ import {ValueNotFound} from "../Core/exceptions/valueNotFound";
 export class UserService {
     constructor(@inject(UserTypes.userRepository) private readonly userRepository: UserRepository) { }
     
-    async createUser(request: User){
+    async createUser(request: PrimitiveUserData){
         const data = {
             name: request.name,
             alias: request.alias,
-            attendance: request.attendance,
+            attendance: 0,
         }
         const user = new User(data);
         return await this.userRepository.createUser(user);
@@ -29,11 +29,9 @@ export class UserService {
 
     async getUser(id: string){
         const user = await this.userRepository.findUser(id);
-
         if(!user){
             throw new ValueNotFound(`User with ID: ${id} does not exist!`);
         }
-        
         return user;
     }
     
@@ -42,6 +40,7 @@ export class UserService {
     }
     
     async deleteUser(id: string){
-        await this.userRepository.deleteUser(id);
+        const user = await this.getUser(id);
+        await this.userRepository.deleteUser(user.id);
     }
 }

@@ -35,9 +35,9 @@ export class userController {
         const data = {
             name: req.body.name,
             alias: req.body.alias,
+            attendance: req.body.attendance,
         }
-        const mappedUser = UserMapper.requestToDomain(data);
-        const user = await this.userService.createUser(mappedUser);
+        const user = await this.userService.createUser(data);
         return ResponseHandler.created(res, user);
     }
     
@@ -50,6 +50,6 @@ export class userController {
     @httpDelete('/:id')
     private async deleteUser(@requestParam("id") id: string, @request() req: express.Request, @response() res: express.Response) {
         await this.userService.deleteUser(id);
-        return ResponseHandler.deleted(res, `User by the ID: ${id} has been deleted!`);
+        return ResponseHandler.deleted(res);
     }
 }

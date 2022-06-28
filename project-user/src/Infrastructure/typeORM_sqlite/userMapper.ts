@@ -25,12 +25,11 @@ export class UserMapper {
         })
     }
     
-    
     static mapToEntity(data: User): UserEntity {
         return {
             id: data.id,
-            name: data.name,
-            alias: data.alias,
+            name: data.name.value(),
+            alias: data.alias.value(),
             attendance: data.attendance,
         }
     }

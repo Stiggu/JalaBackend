@@ -17,12 +17,8 @@ export class ResponseHandler {
             data: data,
         })
     }
-    static deleted<T>(@response() res: express.Response, message: string){
+    static deleted<T>(@response() res: express.Response){
         res.status(HttpStatusCode.NO_CONTENT)
-            .json({
-                status: HttpStatusCode.NO_CONTENT,
-                message: message,
-            })
     }
     static genericResponse<T>(@response() res: express.Response, status: HttpStatusCode, message: string){
         res.status(status)
@@ -31,5 +27,4 @@ export class ResponseHandler {
                 message: message,
             })
     }
-    
 }
