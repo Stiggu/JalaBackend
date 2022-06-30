@@ -22,17 +22,20 @@ export class AttendanceTypeorm implements AttendanceRepository {
     }
 
     async deleteAttendance(id: string): Promise<void> {
-        const attendance = await this.repo.findOne({
-            where: {
-                id: id,
-            }
-        })
+        const attendance = await this.repo.findBy({
+            id: id,
+        });
 
         if (!attendance) {
             throw new ValueNotFound(`Attendance with ID: ${id} does not exist!`);
         }
 
         await this.repo.remove(attendance);
+    }
+    
+    async getAttendance(id: string): Promise<Attendance|undefined> {
+        const attendance = await this.repo.findOneBy({id:id});
+        return attendance ? AttendanceMapper.mapToCore(attendance) : undefined;
     }
 
     async getAllAttendances(): Promise<Attendance[]> {
@@ -46,7 +49,7 @@ export class AttendanceTypeorm implements AttendanceRepository {
             userId: id,
         });
 
-        return attendances ? attendances.map(attendance => AttendanceMapper.mapToCore(attendance)) : undefined;
+        return attendances.length !== 0 ? attendances.map(attendance => AttendanceMapper.mapToCore(attendance)) : undefined;
     }
 
 }

@@ -5,4 +5,5 @@ export interface AttendanceRepository {
     getAllAttendances(): Promise<Attendance[]>;
     getAllAttendancesById(id: string): Promise<Attendance[] | undefined>;
     deleteAttendance(id: string): Promise<void>;
+    getAttendance(id: string): Promise<Attendance | undefined>;
 }

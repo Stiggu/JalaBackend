@@ -35,7 +35,7 @@ export class UserService {
             throw new ValueNotFound(`User with ID: ${id} does not exist!`);
         }
         const { data } = await axios(`http://localhost:27016/attendances/${user.id}`);
-        user.attendances = data.attendance;
+        user.attendance = data.data;
         return user;
     }
 
