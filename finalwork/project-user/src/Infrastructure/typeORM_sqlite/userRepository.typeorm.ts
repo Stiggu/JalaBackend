@@ -9,9 +9,9 @@ import {ValueNotFound} from "../../Core/exceptions/valueNotFound";
 
 @injectable()
 export class UserRepositoryTypeorm implements UserRepository {
-    private readonly repo: Repository<UserEntity> = RelationalDataSource.getRepository(UserEntity);
-    
-    constructor() {
+    constructor(
+        private readonly repo: Repository<UserEntity> = RelationalDataSource.getRepository(UserEntity)
+    ) {
     }
     
     async findAllUsers(name?:string, alias?:string): Promise<User[]> {

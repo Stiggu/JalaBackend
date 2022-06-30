@@ -6,6 +6,7 @@ interface UserData {
     name: UserName,
     alias: UserAlias,
     attendance: number,
+    attendances?: string[]
 }
 
 export interface PrimitiveUserData{
@@ -13,6 +14,7 @@ export interface PrimitiveUserData{
     name: string,
     alias: string,
     attendance: number,
+    attendances?: string[]
 }
 
 export class User implements UserData{
@@ -20,16 +22,20 @@ export class User implements UserData{
     name: UserName;
     alias: UserAlias;
     attendance: number;
+    attendances!: string[];
     
     constructor(data: PrimitiveUserData) {
-        if(data.id){
-            this.id = data.id;
-        }
-        
         this.name = new UserName(data.name);
         this.alias = new UserAlias(data.alias);
         this.attendance = data.attendance;
-        
+
+        if(data.id){
+            this.id = data.id;
+        }
+
+        if(data.attendances){
+            this.attendances = data.attendances;
+        }
     }
     
     updateUser(data: UserData){

@@ -7,5 +7,3 @@ import {UserRepositoryTypeorm} from "./typeORM_sqlite/userRepository.typeorm";
 export const inversifyContainer = new Container();
 inversifyContainer.bind<UserService>(UserTypes.userService).to(UserService);
 inversifyContainer.bind<UserRepository>(UserTypes.userRepository).to(UserRepositoryTypeorm);
-
-// export default inversifyContainer;
