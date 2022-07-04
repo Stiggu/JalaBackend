@@ -24,6 +24,9 @@ export class AttendanceController {
     private async createAttendance(@request() req: express.Request, @response() res: express.Response) {
         const data: PrimitiveAttendanceData = {
             userId: req.body.userId,
+            notes: req.body.notes,
+            start: req.body.start,
+            end: req.body.end,
         }
         const attendance = await this.attendanceService.createAttendance(data);
         ResponseHandler.created(res, attendance);
@@ -37,7 +40,7 @@ export class AttendanceController {
 
     @httpDelete('/:id')
     private async deleteAttendance(@requestParam('id') id: string, @response() res: express.Response) {
-        await this.attendanceService.deleteAttendance(id);
+        await this.attendanceService.deleteAllAttendancesForUser(id);
         ResponseHandler.deleted(res);
     }
 }

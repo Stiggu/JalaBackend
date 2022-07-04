@@ -10,4 +10,13 @@ export class AttendanceEntity {
     
     @Column()
     attendedAt!: Date;
+    
+    @Column()
+    notes!: string;
+    
+    @Column()
+    start!: string;
+    
+    @Column()
+    end!: string;
 }

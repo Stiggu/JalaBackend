@@ -2,7 +2,6 @@
 import {AttendanceRepository} from "../Repository/attendanceRepository";
 import {AttendanceTypes} from "./types";
 import {Attendance, PrimitiveAttendanceData} from "../Core/attendance";
-import {v4 as uuidv4} from 'uuid';
 import {ValueNotFound} from "../Core/exceptions/valueNotFound";
 
 @injectable()
@@ -15,17 +14,18 @@ export class AttendanceService {
     async createAttendance(data: PrimitiveAttendanceData) {
         const attendance = new Attendance({
             userId: data.userId,
-            attendedAt: new Date()
+            attendedAt: new Date(),
+            notes: data.notes,
+            start: data.start,
+            end: data.end,
         })
-
         return this.attendanceRepository.createAttendance(attendance);
-
     }
 
     async findAllAttendances() {
         const attendances = await this.attendanceRepository.getAllAttendances();
 
-        if (attendances.length === 0) {
+        if (!attendances) {
             throw new ValueNotFound('There are no attendances given the query.')
         }
 
@@ -50,6 +50,16 @@ export class AttendanceService {
         }
 
         await this.attendanceRepository.deleteAttendance(id);
+    }
+
+    async deleteAllAttendancesForUser(id: string) {
+        const attendance = await this.attendanceRepository.getAttendance(id);
+
+        if (!attendance) {
+            throw new ValueNotFound(`Attendance ID: ${id} does not exist!`)
+        }
+        
+        await this.attendanceRepository.deleteAllAttendancesForUser(id);
     }
 
 }

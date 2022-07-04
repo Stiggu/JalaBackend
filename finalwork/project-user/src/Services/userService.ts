@@ -8,6 +8,9 @@ import axios from "axios";
 
 @injectable()
 export class UserService {
+    
+    baseUrl = 'http://localhost:27016/attendances';
+    
     constructor(@inject(UserTypes.userRepository) private readonly userRepository: UserRepository) {
     }
 
@@ -34,17 +37,22 @@ export class UserService {
         if (!user) {
             throw new ValueNotFound(`User with ID: ${id} does not exist!`);
         }
-        const { data } = await axios(`http://localhost:27016/attendances/${user.id}`);
+        const { data } = await axios(`${this.baseUrl}/${user.id}`);
         user.attendance = data.data;
         return user;
     }
 
     async getAllUsers(name?: string, alias?: string) {
-        return await this.userRepository.findAllUsers(name, alias);
+        const users = await this.userRepository.findAllUsers(name, alias);
+        if(!users){
+            throw new ValueNotFound(`There are no Users!`);
+        }
+        return users
     }
 
     async deleteUser(id: string) {
         const user = await this.getUser(id);
+        await axios(`${this.baseUrl}/${user.id}`, {method: "DELETE"});
         await this.userRepository.deleteUser(user.id);
     }
 }

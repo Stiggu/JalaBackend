@@ -7,6 +7,9 @@ export class AttendanceMapper {
             id: data.id,
             userId: data.userId,
             attendedAt: data.attendedAt,
+            notes: data.notes,
+            start: data.start,
+            end: data.end,
         }
     }
 
@@ -15,6 +18,9 @@ export class AttendanceMapper {
             id: data.id,
             userId: data.userId,
             attendedAt: data.attendedAt,
+            notes: data.notes,
+            start: data.start,
+            end: data.end,
         })
     }
 }

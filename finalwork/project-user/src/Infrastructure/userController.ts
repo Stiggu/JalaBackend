@@ -29,14 +29,6 @@ export class userController {
         const userList = await this.userService.getAllUsers(name, alias);
         return ResponseHandler.success(res, userList);
     }
-    
-    @httpPost('/')
-    private async updateUser(@request() req: express.Request, @response() res: express.Response){
-        const data = {
-            
-        }
-        
-    }
 
     @httpPost("/")
     private async createUser(@request() req: express.Request, @response() res: express.Response) {

@@ -3,7 +3,7 @@ import {Attendance} from "../../Core/attendance";
 import {AttendanceMapper} from "./attendanceMapper";
 import {AttendanceEntity} from "./attendance.entity";
 import {NoRelationsDataSource} from "./dataSource";
-import {Repository} from "typeorm";
+import {In, Repository} from "typeorm";
 import {ValueNotFound} from "../../Core/exceptions/valueNotFound";
 import {injectable} from "inversify";
 
@@ -13,6 +13,10 @@ export class AttendanceTypeorm implements AttendanceRepository {
     constructor(
         private readonly repo: Repository<AttendanceEntity> = NoRelationsDataSource.getRepository(AttendanceEntity)
     ) {
+    }
+
+    async deleteAllAttendancesForUser(userId: string): Promise<void> {
+        await this.repo.delete({userId  : userId});
     }
 
     async createAttendance(attendance: Attendance): Promise<Attendance> {
@@ -32,15 +36,14 @@ export class AttendanceTypeorm implements AttendanceRepository {
 
         await this.repo.remove(attendance);
     }
-    
-    async getAttendance(id: string): Promise<Attendance|undefined> {
-        const attendance = await this.repo.findOneBy({id:id});
+
+    async getAttendance(id: string): Promise<Attendance | undefined> {
+        const attendance = await this.repo.findOneBy({id: id});
         return attendance ? AttendanceMapper.mapToCore(attendance) : undefined;
     }
 
     async getAllAttendances(): Promise<Attendance[]> {
         const attendances = await this.repo.find();
-        ;
         return attendances.map(attendance => AttendanceMapper.mapToCore(attendance));
     }
 
@@ -51,5 +54,4 @@ export class AttendanceTypeorm implements AttendanceRepository {
 
         return attendances.length !== 0 ? attendances.map(attendance => AttendanceMapper.mapToCore(attendance)) : undefined;
     }
-
 }

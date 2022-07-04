@@ -13,22 +13,22 @@ export class UserRepositoryTypeorm implements UserRepository {
         private readonly repo: Repository<UserEntity> = RelationalDataSource.getRepository(UserEntity)
     ) {
     }
-    
-    async findAllUsers(name?:string, alias?:string): Promise<User[]> {
+
+    async findAllUsers(name?: string, alias?: string): Promise<User[] | undefined> {
         const users = await this.repo.findBy({
             name: name,
             alias: alias,
         });
-        return users.map(user => UserMapper.mapToCore(user));
+        return users.length !== 0 ? users.map(user => UserMapper.mapToCore(user)) : undefined;
     }
-    
+
     async findUser(id: string): Promise<User | undefined> {
         const user = await this.repo.findOne({
             where: {
                 id: id,
             }
         });
-        
+
         return user ? UserMapper.mapToCore(user) : undefined;
     }
 
@@ -40,16 +40,16 @@ export class UserRepositoryTypeorm implements UserRepository {
 
     async deleteUser(id: string): Promise<void> {
         const user = await this.repo.findOne({
-            where:{
+            where: {
                 id: id,
             }
         })
-        
-        if(!user){
+
+        if (!user) {
             throw new ValueNotFound(`User with ID: ${id} does not exist!`);
         }
-        
+
         await this.repo.remove(user);
     }
-    
+
 }
