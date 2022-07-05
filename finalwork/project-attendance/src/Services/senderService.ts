@@ -23,6 +23,9 @@ export class SenderService {
                 const queue = 'notifications';
                 channel.assertQueue(queue, { durable: false });
                 channel.sendToQueue(queue, Buffer.from(JSON.stringify(message)));
+                setTimeout(function() {
+                    connection.close();
+                }, 500);
             });
         })
     }
