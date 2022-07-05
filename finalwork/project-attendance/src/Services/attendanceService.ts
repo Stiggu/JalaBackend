@@ -3,11 +3,15 @@ import {AttendanceRepository} from "../Repository/attendanceRepository";
 import {AttendanceTypes} from "./types";
 import {Attendance, PrimitiveAttendanceData} from "../Core/attendance";
 import {ValueNotFound} from "../Core/exceptions/valueNotFound";
+import {SenderService} from "./senderService";
+import {CommunicationType} from "../Core/types";
+import {Communication} from "../Core/communication";
 
 @injectable()
 export class AttendanceService {
     constructor(
-        @inject(AttendanceTypes.attendanceRepository) private readonly attendanceRepository: AttendanceRepository
+        @inject(AttendanceTypes.attendanceRepository) private readonly attendanceRepository: AttendanceRepository,
+        @inject(AttendanceTypes.senderService) private readonly senderService: SenderService,
     ) {
     }
 
@@ -19,6 +23,17 @@ export class AttendanceService {
             start: data.start,
             end: data.end,
         })
+        
+        const attendances = await this.attendanceRepository.getAllAttendancesById(attendance.userId);
+        
+        const messageToSend: Communication = {
+            type: CommunicationType.ATTENDANCE,
+            message: {
+                userId: attendance.userId,
+                attendances: attendances
+            }
+        }
+        this.senderService.sendMessage(messageToSend);
         return this.attendanceRepository.createAttendance(attendance);
     }
 
@@ -34,11 +49,9 @@ export class AttendanceService {
 
     async findAllAttendancesById(id: string) {
         const attendances = await this.attendanceRepository.getAllAttendancesById(id);
-
         if (!attendances) {
             throw new ValueNotFound(`The ID: ${id} does not have any attendances!`)
         }
-
         return attendances;
     }
 
@@ -53,12 +66,6 @@ export class AttendanceService {
     }
 
     async deleteAllAttendancesForUser(id: string) {
-        const attendance = await this.attendanceRepository.getAttendance(id);
-
-        if (!attendance) {
-            throw new ValueNotFound(`Attendance ID: ${id} does not exist!`)
-        }
-        
         await this.attendanceRepository.deleteAllAttendancesForUser(id);
     }
 

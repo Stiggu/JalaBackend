@@ -52,4 +52,11 @@ export class UserRepositoryTypeorm implements UserRepository {
         await this.repo.remove(user);
     }
 
+    async saveUser(user: User) {
+        const mapperUser = UserMapper.mapToEntity(user);
+        await this.repo.save(mapperUser);
+    }
+    
+    
+
 }

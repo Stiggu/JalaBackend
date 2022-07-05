@@ -1,9 +1,10 @@
 ﻿import {injectable} from "inversify";
 import amqp = require('amqplib/callback_api');
+import {Communication} from "../Core/communication";
 
 @injectable()
 export class SenderService {
-    sendMessage(){
+    sendMessage(message: Communication){
         amqp.connect({
             hostname: 'localhost',
             port: 8080,
@@ -19,18 +20,10 @@ export class SenderService {
                     console.log(error1);
                 }
 
-                const queue = 'hello';
-                const message = 'Hello world!';
-
+                const queue = 'notifications';
                 channel.assertQueue(queue, { durable: false });
-                channel.sendToQueue(queue, Buffer.from(message));
-                console.log('message: ' + message);
+                channel.sendToQueue(queue, Buffer.from(JSON.stringify(message)));
             });
-
-            setTimeout(function() {
-                connection.close();
-                process.exit(0);
-            }, 500);
         })
     }
 }

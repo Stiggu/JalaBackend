@@ -3,7 +3,7 @@ import {
     controller,
     httpDelete,
     httpGet,
-    httpPost,
+    httpPost, httpPut,
     queryParam,
     request,
     requestParam,
@@ -14,6 +14,7 @@ import {UserService} from "../Services/userService";
 import {inject} from "inversify";
 import {UserMapper} from "./typeORM_sqlite/userMapper";
 import {ResponseHandler} from "../Core/responseHandler";
+import {UpdateUserDto} from "../Services/dto/updateUser.dto";
 
 @controller('/users')
 export class userController {
@@ -28,6 +29,19 @@ export class userController {
                               @response() res: express.Response){
         const userList = await this.userService.getAllUsers(name, alias);
         return ResponseHandler.success(res, userList);
+    }
+    
+    @httpPut('/')
+    private async updateUser(
+        @request() req: express.Request,
+        @response() res: express.Response
+    ){
+        const data: UpdateUserDto = {
+            userId: req.body.userId,
+            attendance: req.body.attendance
+        }
+        const user = await this.userService.updateUser(data);
+        return ResponseHandler.success(res, user);
     }
 
     @httpPost("/")

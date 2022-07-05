@@ -3,7 +3,7 @@ import {Attendance} from "../../Core/attendance";
 import {AttendanceMapper} from "./attendanceMapper";
 import {AttendanceEntity} from "./attendance.entity";
 import {NoRelationsDataSource} from "./dataSource";
-import {In, Repository} from "typeorm";
+import {Repository} from "typeorm";
 import {ValueNotFound} from "../../Core/exceptions/valueNotFound";
 import {injectable} from "inversify";
 

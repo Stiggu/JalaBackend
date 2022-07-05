@@ -6,3 +6,8 @@
     NOT_FOUND = 404,
     INTERNAL_ERROR = 500,
 }
+
+export enum CommunicationType {
+    ATTENDANCE = 0,
+    USER = 1,
+}

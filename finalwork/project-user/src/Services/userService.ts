@@ -5,13 +5,20 @@ import {PrimitiveUserData, User} from "../Core/User";
 import {UpdateUserDto} from "./dto/updateUser.dto";
 import {ValueNotFound} from "../Core/exceptions/valueNotFound";
 import axios from "axios";
+import {SenderService} from "./senderService";
+import {Communication} from "../Core/communication";
+import {CommunicationType} from "../Core/types";
 
 @injectable()
 export class UserService {
     
     baseUrl = 'http://localhost:27016/attendances';
     
-    constructor(@inject(UserTypes.userRepository) private readonly userRepository: UserRepository) {
+    constructor(
+        @inject(UserTypes.userRepository) private readonly userRepository: UserRepository,
+        @inject(UserTypes.senderService) private readonly senderService: SenderService
+
+) {
     }
 
     async createUser(request: PrimitiveUserData) {
@@ -25,11 +32,17 @@ export class UserService {
     }
 
     async updateUser(request: UpdateUserDto) {
-        const data = {
-            name: request.name,
-            alias: request.alias,
-            attendance: request.attendance,
+        const user = await this.userRepository.findUser(request.userId);
+        
+        if (!user) {
+            throw new ValueNotFound(`User with ID: ${request.userId} does not exist!`);
         }
+        
+        if(request.attendance !== undefined){
+            user.attendance = request.attendance
+        }
+        await this.userRepository.saveUser(user);
+        return user;
     }
 
     async getUser(id: string) {
@@ -52,7 +65,13 @@ export class UserService {
 
     async deleteUser(id: string) {
         const user = await this.getUser(id);
-        await axios(`${this.baseUrl}/${user.id}`, {method: "DELETE"});
         await this.userRepository.deleteUser(user.id);
+        const message: Communication = {
+            message: {
+                userId: user.id
+            },
+            type: CommunicationType.USER
+        }
+        this.senderService.sendMessage(message);
     }
 }
