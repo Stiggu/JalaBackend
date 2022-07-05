@@ -24,17 +24,16 @@ export class AttendanceService {
             end: data.end,
         })
         
-        const attendances = await this.attendanceRepository.getAllAttendancesById(attendance.userId);
-        
         const messageToSend: Communication = {
             type: CommunicationType.ATTENDANCE,
             message: {
                 userId: attendance.userId,
-                attendances: attendances
             }
         }
+        
+        const createdAttendance = this.attendanceRepository.createAttendance(attendance);
         this.senderService.sendMessage(messageToSend);
-        return this.attendanceRepository.createAttendance(attendance);
+        return createdAttendance
     }
 
     async findAllAttendances() {

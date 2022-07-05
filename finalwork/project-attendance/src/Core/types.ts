@@ -16,5 +16,5 @@ export enum CommunicationType {
 
 export interface AttendanceMessage {
     userId: string,
-    attendances: Attendance[] | undefined
+    // attendances: Attendance[] | undefined
 }
