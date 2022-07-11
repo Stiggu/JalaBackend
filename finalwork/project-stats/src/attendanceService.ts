@@ -22,7 +22,7 @@ export interface AttendanceCommunication {
 export class AttendanceService {
     
     static attendanceBaseUrl = 'http://localhost:27016/attendances';
-    static userBaseUrl = 'http://localhost:27015/users';
+    static userBaseUrl = 'http://localhost:3030/users';
     
     static async getAllAttendancesByUser(id: string): Promise<number> {
         const request = await axios({

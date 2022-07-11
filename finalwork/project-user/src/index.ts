@@ -8,7 +8,7 @@ import {Request, Response} from "express";
 import {ResponseHandler} from "./Core/responseHandler";
 import {HttpStatusCode} from "./Core/types";
 
-const PORT = 27015;
+const PORT = 3030;
 
 const server = new InversifyExpressServer(inversifyContainer);
 

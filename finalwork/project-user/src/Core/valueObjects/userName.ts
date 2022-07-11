@@ -9,7 +9,7 @@ export class UserName extends ValueObjectBase{
         }
     }
     
-    value() {
+    value(): string {
         return this.name;
     }
 }

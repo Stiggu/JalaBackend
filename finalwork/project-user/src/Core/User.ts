@@ -3,8 +3,8 @@ import {UserAlias} from "./valueObjects/userAlias";
 
 interface UserData {
     id?: string,
-    name: UserName,
-    alias: UserAlias,
+    name: string,
+    alias: string,
     attendance: number,
     attendances?: string[]
 }
@@ -19,14 +19,14 @@ export interface PrimitiveUserData{
 
 export class User implements UserData{
     id!: string;
-    name: UserName;
-    alias: UserAlias;
+    name: string;
+    alias: string;
     attendance: number;
     attendances!: string[];
     
     constructor(data: PrimitiveUserData) {
-        this.name = new UserName(data.name);
-        this.alias = new UserAlias(data.alias);
+        this.name = new UserName(data.name).value();
+        this.alias = new UserAlias(data.alias).value();
         this.attendance = data.attendance;
 
         if(data.id){

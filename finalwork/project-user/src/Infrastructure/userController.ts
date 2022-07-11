@@ -12,22 +12,30 @@ import {
 import {UserTypes} from "../Services/types";
 import {UserService} from "../Services/userService";
 import {inject} from "inversify";
-import {UserMapper} from "./typeORM_sqlite/userMapper";
 import {ResponseHandler} from "../Core/responseHandler";
 import {UpdateUserDto} from "../Services/dto/updateUser.dto";
+import {ElasticSearch} from "./elasticSearch";
+import {UserMapper} from "./typeORM_sqlite/userMapper";
+import {User} from "../Core/User";
 
 @controller('/users')
 export class userController {
 
-    constructor(@inject(UserTypes.userService) private userService: UserService) {
+    constructor(@inject(UserTypes.userService) private userService: UserService,
+    @inject(UserTypes.userSearch) private elasticSearch: ElasticSearch) {
     }
 
     @httpGet("/")
-    private async getUserList(@queryParam("name") name: string, 
-                              @queryParam("alias") alias: string, 
+    private async getUserList(@queryParam("query") query: string, 
                               @request() req: express.Request, 
                               @response() res: express.Response){
-        const userList = await this.userService.getAllUsers(name, alias);
+        const userList = await this.userService.getAllUsers(query);
+        if(query){
+            const search = await this.elasticSearch.searchUsers(query);
+            console.log(search)
+            const response = search.map((user: User) => UserMapper.elasticToCore(user))
+            return ResponseHandler.success(res, response);
+        }
         return ResponseHandler.success(res, userList);
     }
     
@@ -49,9 +57,20 @@ export class userController {
         const data = {
             name: req.body.name,
             alias: req.body.alias,
-            attendance: req.body.attendance,
+            attendance: 0,
         }
         const user = await this.userService.createUser(data);
+        const elasticData = {
+            name: user.name,
+            alias: user.alias,
+            attendance: user.attendance,
+            id: user.id,
+        }
+        await this.elasticSearch.elasticClient.index({
+            index: 'users',
+            id: elasticData.id,
+            body: elasticData
+        })
         return ResponseHandler.created(res, user);
     }
     
@@ -64,6 +83,12 @@ export class userController {
     @httpDelete('/:id')
     private async deleteUser(@requestParam("id") id: string, @request() req: express.Request, @response() res: express.Response) {
         await this.userService.deleteUser(id);
+        const search = await this.elasticSearch.searchUsers(id);
+        const _id = search[0]._id;
+        await this.elasticSearch.elasticClient.delete({
+            index: 'users',
+            id: _id
+        });
         return ResponseHandler.deleted(res);
     }
 }

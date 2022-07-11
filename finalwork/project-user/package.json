@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "npx nodemon src/index.ts",
+    "start": "npx nodemon ./src/index.ts",
+    "start_docker": "ts-node ./dist/index.js",
+    "build": "tsc -p .",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint . --ext .ts"
   },
@@ -15,6 +17,7 @@
     "axios": "^0.27.2",
     "body-parser": "^1.20.0",
     "class-transformer": "^0.5.1",
+    "elasticsearch": "^16.7.3",
     "express": "^4.17.3",
     "inversify": "^6.0.1",
     "inversify-express-utils": "^6.4.3",

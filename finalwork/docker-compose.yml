@@ -1,0 +1,33 @@
+﻿version: '3.8'
+
+services:
+#  attendance-db:
+#    image: mvertes/alpine-mongo
+#    container_name: no-relation-db
+#    volumes:
+#      - './local-db:./var/lib/mongo'
+#    ports:
+#      - '27017:27017'
+  elastic-search:
+    image: elasticsearch:7.17.3
+    container_name: elasticsearch
+    environment:
+      discovery.type: single-node
+    ports:
+      - '9200:9200'
+      - '9300:9300'
+#  users:
+#    image: users:latest
+#    build:
+#      context: ./project-user/
+#      dockerfile: ./Users.dockerfile
+#    container_name: users
+#    ports:
+#      - '3015:3000'
+#    depends_on:
+#      - 'elastic-search'
+#    links:
+#      - 'elastic-search'
+#    volumes:
+#      - ./project-user:/home/node/app
+#    command: npm run start_docker

@@ -17,6 +17,15 @@ export class UserMapper {
         })
     }
     
+    static elasticToCore(data: any): User {
+        return new User({
+            id: data._id,
+            name: data._source.name,
+            alias: data._source.alias,
+            attendance: data._source.attendance,
+        })
+}
+    
     static requestToDomain(data: requestToDomain): User {
         return new User({
             name: data.name,
@@ -28,8 +37,8 @@ export class UserMapper {
     static mapToEntity(data: User): UserEntity {
         return {
             id: data.id,
-            name: data.name.value(),
-            alias: data.alias.value(),
+            name: data.name,
+            alias: data.alias,
             attendance: data.attendance,
         }
     }

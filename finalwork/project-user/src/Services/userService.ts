@@ -5,9 +5,6 @@ import {PrimitiveUserData, User} from "../Core/User";
 import {UpdateUserDto} from "./dto/updateUser.dto";
 import {ValueNotFound} from "../Core/exceptions/valueNotFound";
 import axios from "axios";
-import {SenderService} from "./senderService";
-import {Communication} from "../Core/communication";
-import {CommunicationType} from "../Core/types";
 
 @injectable()
 export class UserService {
@@ -16,8 +13,6 @@ export class UserService {
     
     constructor(
         @inject(UserTypes.userRepository) private readonly userRepository: UserRepository,
-        @inject(UserTypes.senderService) private readonly senderService: SenderService
-
 ) {
     }
 
@@ -50,8 +45,12 @@ export class UserService {
         if (!user) {
             throw new ValueNotFound(`User with ID: ${id} does not exist!`);
         }
-        const { data } = await axios(`${this.baseUrl}/${user.id}`);
-        user.attendance = data.data;
+        try {
+            const { data } = await axios(`${this.baseUrl}/${user.id}`);
+            user.attendance = data.data;
+        } catch (e) {
+            console.log(e);
+        }
         return user;
     }
 
@@ -65,13 +64,22 @@ export class UserService {
 
     async deleteUser(id: string) {
         const user = await this.getUser(id);
-        await this.userRepository.deleteUser(user.id);
-        const message: Communication = {
-            message: {
-                userId: user.id
-            },
-            type: CommunicationType.USER
+        try {
+            await axios(`${this.baseUrl}/${user.id}`, {method: "DELETE"});
+        } catch (e) {
+            console.log(e);
         }
-        this.senderService.sendMessage(message);
+        await this.userRepository.deleteUser(user.id);
+
+        /*
+                const message: Communication = {
+                    message: {
+                        userId: user.id
+                    },
+                    type: CommunicationType.USER
+                }
+                const sender = await SenderService.getInstance();
+                await sender.sendMessage(message);
+        */
     }
 }

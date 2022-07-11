@@ -42,9 +42,9 @@ export class AttendanceTypeorm implements AttendanceRepository {
         return attendance ? AttendanceMapper.mapToCore(attendance) : undefined;
     }
 
-    async getAllAttendances(): Promise<Attendance[]> {
+    async getAllAttendances(): Promise<Attendance[] | undefined> {
         const attendances = await this.repo.find();
-        return attendances.map(attendance => AttendanceMapper.mapToCore(attendance));
+        return attendances.length !== 0 ? attendances.map(attendance => AttendanceMapper.mapToCore(attendance)): undefined;
     }
 
     async getAllAttendancesById(id: string): Promise<Attendance[] | undefined> {

@@ -9,7 +9,7 @@ export class UserAlias extends ValueObjectBase {
         }
     }
     
-    value() {
+    value(): string {
         return this.alias;
     }
 
